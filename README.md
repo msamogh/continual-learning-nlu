@@ -1,14 +1,6 @@
-# Continual Learning for Task-Oriented Dialogue Systems
+# An Exploration of Rehearsal Methods for NLU in Task-Oriented Dialogue Systems
 
-This repository includes the dataset and baselines of the paper:
-
-**Continual Learning for Task-Oriented Dialogue Systems** (Accepted in EMNLP 2021) [[PDF]](https://arxiv.org/abs/2012.15504). 
-
-**Authors**: [Andrea Madotto](https://andreamad8.github.io), [Zhaojiang Lin](https://zlinao.github.io), Zhenpeng Zhou, [Seungwhan Moon](https://shanemoon.com/), [Paul Crook](http://pacrook.net/), [Bing Liu](http://bingliu.me/), [Zhou Yu](https://www.cs.columbia.edu/~zhouyu/), Eunjoon Cho, [Zhiguang Wang](https://research.fb.com/people/wang-zhiguang/), [Pascale Fung](https://pascale.home.ece.ust.hk/)
-
-
-## Abstract
-Continual learning in task-oriented dialogue systems allows the system to add new domains and functionalities over time after deployment, without incurring the high cost of retraining the whole system each time. In this paper, we propose a first-ever continual learning benchmark for task-oriented dialogue systems with 37 domains to be learned continuously in both modularized and end-to-end learning settings.  In addition, we implement and compare multiple existing continual learning baselines, and we propose a simple yet effective architectural method based on residual adapters. We also suggest that the upper bound performance of continual learning should be equivalent to multitask learning when data from all domain is available at once. Our experiments demonstrate that the proposed architectural method and a simple replay-based strategy perform better, by a large margin, compared to other continuous learning techniques, and only slightly worse than the multitask learning upper bound while being 20X faster in learning new domains. We also report several trade-offs in terms of parameter usage, memory size and training time, which are important in the design of a task-oriented dialogue system. The proposed benchmark is released to promote more research in this direction.  
+This repository is based off Andrea Madotto's [Github repo](https://github.com/andreamad8/ToDCL) and the EMNLP paper **Continual Learning for Task-Oriented Dialogue Systems** (Accepted in EMNLP 2021) [[PDF]](https://arxiv.org/abs/2012.15504). 
 
 ## Installation
 The Continual Learning benchmark is created by jointly pre-processing four task-oriented dataset such as [Task-Master (TM19)](https://github.com/google-research-datasets/Taskmaster.git), [Task-Master 2020 (TM20)](https://github.com/google-research-datasets/Taskmaster.git), [Schema Guided Dialogue (SGD)](https://github.com/google-research-datasets/dstc8-schema-guided-dialogue.git) and [MultiWoZ](https://github.com/budzianowski/multiwoz.git). To download the dataset, and setup basic package use: 
