@@ -1,6 +1,6 @@
-from typing import *
-import numpy as np
 from collections import defaultdict
+
+import numpy as np
 
 from run import *
 
@@ -19,6 +19,11 @@ def forgetting(run: CLRun) -> float:
         run.ordered_accuracies[-1][task] - task_wise_best_accs[task]
         for task in run.ordered_tasks
     ])
+
+
+def avg_accuracy(run: CLRun) -> float:
+    for accuracies in run.ordered_accuracies:
+        pass
 
 
 if __name__ == "__main__":

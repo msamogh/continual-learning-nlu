@@ -9,17 +9,12 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import itertools
-import numpy as np
-import numpy
 import os
 import re
-import json
 import subprocess
 import tempfile
+
 import numpy as np
-from collections import Counter
-from six.moves import urllib
 
 # -*- coding: utf-8 -*-
 # Copyright 2017 Google Inc.
@@ -56,7 +51,6 @@ def moses_multi_bleu(hypotheses, references, lowercase=False):
     multi_bleu_path = "utils/multi-bleu.perl"
     os.chmod(multi_bleu_path, 0o755)
 
-
     # Dump hypotheses and references to tempfiles
     hypothesis_file = tempfile.NamedTemporaryFile()
     hypothesis_file.write("\n".join(hypotheses).encode("utf-8"))
@@ -67,15 +61,15 @@ def moses_multi_bleu(hypotheses, references, lowercase=False):
     reference_file.write(b"\n")
     reference_file.flush()
 
-
-     # Calculate BLEU using multi-bleu script
+    # Calculate BLEU using multi-bleu script
     with open(hypothesis_file.name, "r") as read_pred:
         bleu_cmd = [multi_bleu_path]
         if lowercase:
             bleu_cmd += ["-lc"]
         bleu_cmd += [reference_file.name]
         try:
-            bleu_out = subprocess.check_output(bleu_cmd, stdin=read_pred, stderr=subprocess.STDOUT)
+            bleu_out = subprocess.check_output(bleu_cmd, stdin=read_pred,
+                                               stderr=subprocess.STDOUT)
             bleu_out = bleu_out.decode("utf-8")
             bleu_score = re.search(r"BLEU = (.+?),", bleu_out).group(1)
             bleu_score = float(bleu_score)
@@ -90,12 +84,12 @@ def moses_multi_bleu(hypotheses, references, lowercase=False):
     reference_file.close()
     return bleu_score
 
+
 def test():
-  ref = "I don't like dogs"
-  sent = "You are mega man"
-  persona = ["I hate dogs", "I like blue cars"]
+    ref = "I don't like dogs"
+    sent = "You are mega man"
+    persona = ["I hate dogs", "I like blue cars"]
 
-
-  BLEU = moses_multi_bleu(np.array([sent]),np.array([ref]))
-  print(BLEU)
-  BLEU = moses_multi_bleu(np.array([ref]),np.array([ref]))
+    BLEU = moses_multi_bleu(np.array([sent]), np.array([ref]))
+    print(BLEU)
+    BLEU = moses_multi_bleu(np.array([ref]), np.array([ref]))

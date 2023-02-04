@@ -1,14 +1,11 @@
+from collections import OrderedDict
+from typing import Any, Optional, Tuple, List
 
-from transformers import GPT2Model, GPT2Tokenizer, GPT2PreTrainedModel
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from torch.nn import CrossEntropyLoss
-from collections import OrderedDict
-from typing import Any, Dict, Optional, Tuple, Union, List
-import numpy as np
-import torch.autograd as autograd
-import torch.nn.functional as F
+from transformers import GPT2Model, GPT2PreTrainedModel
+
 
 class ModelOutput(OrderedDict):
     """
@@ -30,7 +27,8 @@ class ModelOutput(OrderedDict):
         ), f"{self.__class__.__name__} should not have more than one required field."
 
         first_field = getattr(self, class_fields[0].name)
-        other_fields_are_none = all(getattr(self, field.name) is None for field in class_fields[1:])
+        other_fields_are_none = all(
+            getattr(self, field.name) is None for field in class_fields[1:])
 
         if other_fields_are_none and not is_tensor(first_field):
             try:
@@ -44,9 +42,9 @@ class ModelOutput(OrderedDict):
             if first_field_iterator:
                 for element in iterator:
                     if (
-                        not isinstance(element, (list, tuple))
-                        or not len(element) == 2
-                        or not isinstance(element[0], str)
+                            not isinstance(element, (list, tuple))
+                            or not len(element) == 2
+                            or not isinstance(element[0], str)
                     ):
                         break
                     setattr(self, element[0], element[1])
@@ -61,16 +59,20 @@ class ModelOutput(OrderedDict):
                     self[field.name] = v
 
     def __delitem__(self, *args, **kwargs):
-        raise Exception(f"You cannot use ``__delitem__`` on a {self.__class__.__name__} instance.")
+        raise Exception(
+            f"You cannot use ``__delitem__`` on a {self.__class__.__name__} instance.")
 
     def setdefault(self, *args, **kwargs):
-        raise Exception(f"You cannot use ``setdefault`` on a {self.__class__.__name__} instance.")
+        raise Exception(
+            f"You cannot use ``setdefault`` on a {self.__class__.__name__} instance.")
 
     def pop(self, *args, **kwargs):
-        raise Exception(f"You cannot use ``pop`` on a {self.__class__.__name__} instance.")
+        raise Exception(
+            f"You cannot use ``pop`` on a {self.__class__.__name__} instance.")
 
     def update(self, *args, **kwargs):
-        raise Exception(f"You cannot use ``update`` on a {self.__class__.__name__} instance.")
+        raise Exception(
+            f"You cannot use ``update`` on a {self.__class__.__name__} instance.")
 
     def __getitem__(self, k):
         if isinstance(k, str):
@@ -96,6 +98,7 @@ class ModelOutput(OrderedDict):
         Convert self to a tuple containing all the attributes/keys that are not ``None``.
         """
         return tuple(self[k] for k in self.keys())
+
 
 class CausalLMOutputWithPast(ModelOutput):
     """
@@ -127,6 +130,7 @@ class CausalLMOutputWithPast(ModelOutput):
     hidden_states: Optional[Tuple[torch.FloatTensor]] = None
     attentions: Optional[Tuple[torch.FloatTensor]] = None
 
+
 class BaseModelOutputWithPast(ModelOutput):
     """
     Base class for model's outputs that may also contain a past key/values (to speed up sequential decoding).
@@ -157,7 +161,6 @@ class BaseModelOutputWithPast(ModelOutput):
     attentions: Optional[Tuple[torch.FloatTensor]] = None
 
 
-
 class Adapter(nn.Module):
     def __init__(self, config, bottleneck):
         super(Adapter, self).__init__()
@@ -172,19 +175,19 @@ class Adapter(nn.Module):
         x_ = self.project_down(x_)
         x_ = self.relu(x_)
         x_ = self.project_up(x_)
-        x  = x + x_ #residual connection
+        x = x + x_  # residual connection
         return x
-
 
 
 class MixAdapter(nn.Module):
     def __init__(self, config, bottleneck_size=400, adapter_num=25):
         super(MixAdapter, self).__init__()
         # 20 adapters with task_id 0--19, when task_id==-1 means dont use adapter
-        self.mixadapter = nn.ModuleList([Adapter(config, bottleneck_size) for _ in range(adapter_num)])
+        self.mixadapter = nn.ModuleList(
+            [Adapter(config, bottleneck_size) for _ in range(adapter_num)])
 
     def forward(self, x, task_id=-1):
-        if task_id==-1:
+        if task_id == -1:
             return x
         else:
             return self.mixadapter[task_id](x)
@@ -197,12 +200,14 @@ class GPT2Adapter(GPT2PreTrainedModel):
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
         self.init_weights()
         self.config = config
-        
+
     def get_output_embeddings(self):
         return self.lm_head
 
-    def add_adapters(self,bottleneck_size=100,adapter_num=40):
-        self.adapter_blocks = nn.ModuleList([MixAdapter(self.config,bottleneck_size,adapter_num) for _ in range(self.config.n_layer)])
+    def add_adapters(self, bottleneck_size=100, adapter_num=40):
+        self.adapter_blocks = nn.ModuleList(
+            [MixAdapter(self.config, bottleneck_size, adapter_num) for _ in
+             range(self.config.n_layer)])
 
     def prepare_inputs_for_generation(self, input_ids, past=None, **kwargs):
         # only last token for inputs_ids if past is defined in kwargs
@@ -244,9 +249,9 @@ class GPT2Adapter(GPT2PreTrainedModel):
             output_attentions=None,
             output_hidden_states=None,
             return_dict=None,
-            task_id = -1,
+            task_id=-1,
             **kwargs,
-        ):
+    ):
         r"""
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
             Labels for language modeling.
@@ -263,8 +268,6 @@ class GPT2Adapter(GPT2PreTrainedModel):
             past_key_values = kwargs.pop("past")
         assert kwargs == {}, f"Unexpected keyword arguments: {list(kwargs.keys())}."
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
-
-
 
         # transformer_outputs = self.transformer(
         #     input_ids,
@@ -298,7 +301,8 @@ class GPT2Adapter(GPT2PreTrainedModel):
         return_dict = return_dict if return_dict is not None else self.transformer.config.use_return_dict
 
         if input_ids is not None and inputs_embeds is not None:
-            raise ValueError("You cannot specify both input_ids and inputs_embeds at the same time")
+            raise ValueError(
+                "You cannot specify both input_ids and inputs_embeds at the same time")
         elif input_ids is not None:
             input_shape = input_ids.size()
             input_ids = input_ids.view(-1, input_shape[-1])
@@ -307,7 +311,8 @@ class GPT2Adapter(GPT2PreTrainedModel):
             input_shape = inputs_embeds.size()[:-1]
             batch_size = inputs_embeds.shape[0]
         else:
-            raise ValueError("You have to specify either input_ids or inputs_embeds")
+            raise ValueError(
+                "You have to specify either input_ids or inputs_embeds")
 
         if token_type_ids is not None:
             token_type_ids = token_type_ids.view(-1, input_shape[-1])
@@ -321,7 +326,9 @@ class GPT2Adapter(GPT2PreTrainedModel):
             past_length = past_key_values[0][0].size(-2)
         if position_ids is None:
             device = input_ids.device if input_ids is not None else inputs_embeds.device
-            position_ids = torch.arange(past_length, input_shape[-1] + past_length, dtype=torch.long, device=device)
+            position_ids = torch.arange(past_length,
+                                        input_shape[-1] + past_length,
+                                        dtype=torch.long, device=device)
             position_ids = position_ids.unsqueeze(0).view(-1, input_shape[-1])
 
         # Attention mask.
@@ -340,7 +347,8 @@ class GPT2Adapter(GPT2PreTrainedModel):
             # positions we want to attend and -10000.0 for masked positions.
             # Since we are adding it to the raw scores before the softmax, this is
             # effectively the same as removing these entirely.
-            attention_mask = attention_mask.to(dtype=next(self.transformer.parameters()).dtype)  # fp16 compatibility
+            attention_mask = attention_mask.to(dtype=next(
+                self.transformer.parameters()).dtype)  # fp16 compatibility
             attention_mask = (1.0 - attention_mask) * -10000.0
 
         # If a 2D ou 3D attention mask is provided for the cross-attention
@@ -349,8 +357,10 @@ class GPT2Adapter(GPT2PreTrainedModel):
             encoder_batch_size, encoder_sequence_length, _ = encoder_hidden_states.size()
             encoder_hidden_shape = (encoder_batch_size, encoder_sequence_length)
             if encoder_attention_mask is None:
-                encoder_attention_mask = torch.ones(encoder_hidden_shape, device=device)
-            encoder_attention_mask = self.transformer.invert_attention_mask(encoder_attention_mask)
+                encoder_attention_mask = torch.ones(encoder_hidden_shape,
+                                                    device=device)
+            encoder_attention_mask = self.transformer.invert_attention_mask(
+                encoder_attention_mask)
         else:
             encoder_attention_mask = None
 
@@ -358,7 +368,8 @@ class GPT2Adapter(GPT2PreTrainedModel):
         # 1.0 in head_mask indicate we keep the head
         # attention_probs has shape bsz x n_heads x N x N
         # head_mask has shape n_layer x batch x n_heads x N x N
-        head_mask = self.transformer.get_head_mask(head_mask, self.transformer.config.n_layer)
+        head_mask = self.transformer.get_head_mask(head_mask,
+                                                   self.transformer.config.n_layer)
 
         if inputs_embeds is None:
             inputs_embeds = self.transformer.wte(input_ids)
@@ -375,18 +386,23 @@ class GPT2Adapter(GPT2PreTrainedModel):
         presents = () if use_cache else None
         all_attentions = () if output_attentions else None
         all_hidden_states = () if output_hidden_states else None
-        if(complex):
+        if (complex):
             img_part = torch.zeros_like(hidden_states)
-        for i, (block, layer_past, adapter) in enumerate(zip(self.transformer.h, past_key_values, self.adapter_blocks)):
+        for i, (block, layer_past, adapter) in enumerate(
+                zip(self.transformer.h, past_key_values, self.adapter_blocks)):
             if output_hidden_states:
-                all_hidden_states = all_hidden_states + (hidden_states.view(*output_shape),)
+                all_hidden_states = all_hidden_states + (
+                hidden_states.view(*output_shape),)
 
-            if getattr(self.transformer.config, "gradient_checkpointing", False):
+            if getattr(self.transformer.config, "gradient_checkpointing",
+                       False):
 
                 def create_custom_forward(module):
                     def custom_forward(*inputs):
                         # checkpointing only works with tuple returns, not with lists
-                        return tuple(output for output in module(*inputs, use_cache, output_attentions))
+                        return tuple(output for output in
+                                     module(*inputs, use_cache,
+                                            output_attentions))
 
                     return custom_forward
 
@@ -410,7 +426,7 @@ class GPT2Adapter(GPT2PreTrainedModel):
                     use_cache=use_cache,
                     output_attentions=output_attentions,
                 )
-                
+
             outputs[0] = adapter(outputs[0], task_id=task_id)
 
             hidden_states, present = outputs[:2]
@@ -428,7 +444,10 @@ class GPT2Adapter(GPT2PreTrainedModel):
             all_hidden_states = all_hidden_states + (hidden_states,)
 
         if not return_dict:
-            transformer_outputs = tuple(v for v in [hidden_states, presents, all_hidden_states, all_attentions] if v is not None)
+            transformer_outputs = tuple(v for v in [hidden_states, presents,
+                                                    all_hidden_states,
+                                                    all_attentions] if
+                                        v is not None)
         else:
             transformer_outputs = BaseModelOutputWithPast(
                 last_hidden_state=hidden_states,
@@ -436,7 +455,6 @@ class GPT2Adapter(GPT2PreTrainedModel):
                 hidden_states=all_hidden_states,
                 attentions=all_attentions,
             )
-
 
         hidden_states = transformer_outputs[0]
 
@@ -449,8 +467,9 @@ class GPT2Adapter(GPT2PreTrainedModel):
             shift_labels = labels[..., 1:].contiguous()
             # Flatten the tokens
             loss_fct = CrossEntropyLoss()
-            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
-            
+            loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)),
+                            shift_labels.view(-1))
+
         if not return_dict:
             output = (lm_logits,) + transformer_outputs[1:]
             return ((loss,) + output) if loss is not None else output
@@ -462,4 +481,3 @@ class GPT2Adapter(GPT2PreTrainedModel):
             hidden_states=transformer_outputs.hidden_states,
             attentions=transformer_outputs.attentions,
         )
-

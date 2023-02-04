@@ -6,6 +6,7 @@ from typing import *
 class Task:
     task_name: Text
 
+
 @dataclass
 class CLRun:
     ordered_tasks: List[Task]

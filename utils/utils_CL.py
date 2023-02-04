@@ -1,6 +1,7 @@
 import numpy as np
 import quadprog
 
+
 def store_grad(pp, grads, grad_dims, tid):
     """
         This stores parameter gradients of past tasks.
@@ -19,6 +20,7 @@ def store_grad(pp, grads, grad_dims, tid):
             grads[beg: en, tid].copy_(param.grad.data.view(-1))
         cnt += 1
 
+
 def overwrite_grad(pp, newgrad, grad_dims):
     """
         This is used to overwrite the gradients with a new gradient
@@ -36,6 +38,7 @@ def overwrite_grad(pp, newgrad, grad_dims):
                 param.grad.data.size())
             param.grad.data.copy_(this_grad)
         cnt += 1
+
 
 def project2cone2(gradient, memories, margin=0.5, eps=1e-3):
     """
