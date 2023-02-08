@@ -6,7 +6,7 @@ from cl_domain.data import Domain
 
 
 class DomainSimilarityMetric(object):
-    """Base class for data similarity metrics."""
+    """Base class for data domain_similarity metrics."""
 
     def similarity(self, domain_a: Domain, domain_b: Domain) -> float:
         raise NotImplementedError
@@ -28,7 +28,7 @@ class EmbeddingFn(object):
 
 @dataclass(frozen=True)
 class ClusteringMetric(DomainSimilarityMetric):
-    """Common class for data similarity metrics that use embedding + clustering methods."""
+    """Common class for data domain_similarity metrics that use embedding + clustering methods."""
 
     embedding_fn: EmbeddingFn
     clusterer: Clusterer
