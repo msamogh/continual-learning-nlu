@@ -1,7 +1,16 @@
 from typing import *
 
 from cl_domain.data import *
+from cl_domain.experiment.ordering import random_ordering, max_path_ordering, \
+    min_path_ordering
 from cl_domain.model import CLModel
+
+
+ORDERINGS = {
+    "random": random_ordering,
+    "max_path": max_path_ordering,
+    "min_path": min_path_ordering,
+}
 
 
 @dataclass(frozen=True)

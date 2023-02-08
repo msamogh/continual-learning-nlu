@@ -3,10 +3,9 @@ from collections import defaultdict
 import numpy as np
 
 from cl_domain.data import *
-from cl_domain.data.experiment import ExperimentRun, ExperimentResults
 
 
-def avg_forgetting(results: ExperimentResults) -> float:
+def avg_forgetting(results: "ExperimentResults") -> float:
     """Calculate the average forgetting.
 
     Forgetting is defined as the average difference between the best accuracy
@@ -26,7 +25,7 @@ def avg_forgetting(results: ExperimentResults) -> float:
     ])
 
 
-def avg_accuracy(results: ExperimentResults) -> float:
+def avg_accuracy(results: "ExperimentResults") -> float:
     for accuracies in results.accuracies:
         pass
     return 0
