@@ -1,5 +1,5 @@
 from cl_domain.config import get_args
-from cl_domain.data import Domain, DomainSplit
+from cl_domain.domain import Domain, DomainSplit
 from cl_domain.experiment import ORDERINGS, ExperimentRun
 
 

@@ -2,7 +2,7 @@ from collections import defaultdict
 
 import numpy as np
 
-from cl_domain.data import *
+from cl_domain.domain import *
 
 
 def avg_forgetting(results: "ExperimentResults") -> float:

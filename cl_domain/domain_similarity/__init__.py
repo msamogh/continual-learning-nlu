@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import *
 import numpy as np
 
-from cl_domain.data import Domain
+from cl_domain.domain import Domain
 
 
 class DomainSimilarityMetric(object):

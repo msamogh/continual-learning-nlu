@@ -1,6 +1,6 @@
 from typing import *
 
-from cl_domain.data import *
+from cl_domain.domain import *
 from cl_domain.experiment.ordering import random_ordering, max_path_ordering, \
     min_path_ordering
 from cl_domain.model import CLModel

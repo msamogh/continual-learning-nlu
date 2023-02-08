@@ -1,6 +1,6 @@
 from typing import *
 
-from cl_domain.data import Domain
+from cl_domain.domain import Domain
 from cl_domain.utils import GLOBAL_RAND
 
 
