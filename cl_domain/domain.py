@@ -47,20 +47,20 @@ class Domain:
     For example, the data "weather" might contain utterances such as "What's
     the weather like today?" and "What's the weather like in New York?".
     """
-    dataset: Text
-    domain: Text
-    utterances: Dict[Text, List[Sample]] = field(
+    dataset_name: Text
+    domain_name: Text
+    splits: Dict[Text, List[Sample]] = field(
         default_factory=lambda: defaultdict(list))
 
     @staticmethod
-    def get_all_domains(ctx_window_size: int):
-        all_domains = {}
+    def generate_samples(ctx_window_size: Optional[int] = None):
+        domain_wise_samples = {}
         # Every dataset
-        for dataset in ("multiwoz", "sgd", "tm_2019", "tm_2020"):
+        for dataset in ("sgd",):  # ("multiwoz", "sgd", "tm_2019", "tm_2020"):
             # Every split in a dataset
             for split in ("train", "valid", "test"):
                 # Every file in a split
-                with (Path("data") / dataset / f"{split}.json").open(
+                with (Path("../data") / dataset / f"{split}.json").open(
                         "r") as f:
                     dialogues = json.load(f)
                     # Ever dialogue in a file
@@ -70,8 +70,8 @@ class Domain:
                         if len(domains) > 1:
                             continue
                         domain = domains[0]
-                        if domain not in all_domains:
-                            all_domains[domain] = Domain(dataset, domain)
+                        if domain not in domain_wise_samples:
+                            domain_wise_samples[domain] = Domain(dataset, domain)
 
                         # Every turn in a dialogue
                         for idx, turn in enumerate(dialogue["dialogue"]):
@@ -83,18 +83,25 @@ class Domain:
                                     "(" in turn["utt"]
                                 ):
                                     # Consider all utterances within a fixed window as the context.
-                                    context = [
-                                        Turn(speaker=turn["spk"], utterance=turn["utt"])
-                                        for turn in dialogue["dialogue"][idx - ctx_window_size + 1:idx]
-                                    ]
-                                    all_domains[domain].utterances[split].append(
+                                    if ctx_window_size is None:
+                                        context = [
+                                            Turn(speaker=turn["spk"],
+                                                 utterance=turn["utt"])
+                                            for turn in dialogue["dialogue"][:idx]
+                                        ]
+                                    else:
+                                        context = [
+                                            Turn(speaker=turn["spk"], utterance=turn["utt"])
+                                            for turn in dialogue["dialogue"][idx - ctx_window_size + 1:idx]
+                                        ]
+                                    domain_wise_samples[domain].splits[split].append(
                                         Sample(
                                             context=context,
                                             intent_label=turn["utt"][:turn["utt"].index("(")],
                                             domain=domain
                                         )
                                     )
-        return all_domains
+        return domain_wise_samples
 
 
 @dataclass(frozen=True)
@@ -102,7 +109,7 @@ class DomainSplit:
     """A subset of a data.
 
     DomainSubset objects are used to represent a subset of a data. This is
-    useful for evaluating the performance of a model on a subset of a data.
+    useful for evaluating the performance of a train on a subset of a data.
     """
     domain: Domain
     train_utterances: List[Sample]
@@ -110,15 +117,18 @@ class DomainSplit:
     test_utterances: List[Sample]
 
     @classmethod
-    def subsample(cls, domain: Domain, n: Union[int, float], test_size: float = 0.2):
+    def subsample(cls, domain: Domain, n: Union[int, float], test_size: float = 0.2) -> "DomainSplit":
         if isinstance(n, float):
-            n = int(len(domain.utterances) // n)
-        train_utterances = domain.utterances["train"][:n]
-        val_utterances = domain.utterances["valid"]
-        test_utterances = domain.utterances["test"]
+            n = int(len(domain.splits) // n)
+        train_utterances = domain.splits["train"][:n]
+        val_utterances = domain.splits["valid"]
+        test_utterances = domain.splits["test"]
         return cls(domain, train_utterances, val_utterances, test_utterances)
 
 
 if __name__ == "__main__":
     args = get_args()
+    domain_wise_samples = Domain.generate_samples()
+    for sample in domain_wise_samples:
+        print(sample)
     print("done")
