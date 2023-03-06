@@ -1,6 +1,8 @@
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
-from cl_domain.experiment import ORDERINGS, CLRunInput
+from cl_domain.experiment import CLRunInput
+from cl_domain.train import continually_train, init_trainer
+from domain_ordering import ORDERINGS
 
 
 def generate_experiment_input(args):
@@ -23,5 +25,9 @@ def run_training_experiment(cl_run_input: CLRunInput):
 
 if __name__ == "__main__":
     args = get_args()
-    experiment_run = generate_experiment_input(args)
+
+    cl_run_input = generate_experiment_input(args)
+    trainer = init_trainer(cl_run_input)
+    continually_train(trainer, cl_run_input)
+
     print("Done")
