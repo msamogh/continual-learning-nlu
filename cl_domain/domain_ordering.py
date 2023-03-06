@@ -23,3 +23,10 @@ def min_path_ordering(domains: List[Domain]) -> List[Domain]:
     domains.
     """
     raise NotImplementedError
+
+
+ORDERINGS = {
+    "random": random_ordering,
+    "max_path": max_path_ordering,
+    "min_path": min_path_ordering,
+}
