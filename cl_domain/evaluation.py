@@ -15,18 +15,18 @@ def avg_forgetting(results: "ExperimentResults") -> float:
     See https://ai.googleblog.com/2022/04/learning-to-prompt-for-continual.html.
     """
     domain_wise_best_accs = defaultdict(float)
-    for accuracies in results.accuracies[:-1]:
-        for domain in results.experiment_run.domain_ordering:
+    for accuracies in results.cl_run_accuracies[:-1]:
+        for domain in results.cl_run_input.domain_ordering:
             domain_wise_best_accs[domain] = max(domain_wise_best_accs[domain],
-                                                accuracies[domain.domain])
+                                                accuracies[domain.domain_name])
     return np.average([
-        results.accuracies[-1][domain.domain] - domain_wise_best_accs[domain.domain]
-        for domain in results.experiment_run.domain_ordering
+        results.cl_run_accuracies[-1][domain.domain_name] - domain_wise_best_accs[domain.domain_name]
+        for domain in results.cl_run_input.domain_ordering
     ])
 
 
 def avg_accuracy(results: "ExperimentResults") -> float:
-    for accuracies in results.accuracies:
+    for accuracies in results.cl_run_accuracies:
         pass
     return 0
 
