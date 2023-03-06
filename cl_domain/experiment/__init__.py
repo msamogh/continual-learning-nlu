@@ -1,9 +1,10 @@
 from typing import *
+from dataclasses import dataclass
 
 from cl_domain.domain import *
 from cl_domain.experiment.ordering import random_ordering, max_path_ordering, \
     min_path_ordering
-from cl_domain.model import CLModel
+from cl_domain.train import CLTrainConfig
 
 
 ORDERINGS = {
@@ -14,15 +15,12 @@ ORDERINGS = {
 
 
 @dataclass(frozen=True)
-class ExperimentRun:
+class CLRunInput:
     domain_ordering: List[Domain]
-    domain_samples: Dict[Text, DomainSplit]
-
-    def continually_train(self, model: CLModel) -> "ExperimentResults":
-        raise NotImplementedError
+    domain_wise_samples: Dict[Text, DomainSplit]
 
 
 @dataclass(frozen=True)
-class ExperimentResults:
-    experiment_run: ExperimentRun
-    accuracies: List[Dict[Text, float]]
+class CLRunResult:
+    cl_run_input: CLRunInput
+    cl_run_accuracies: List[Dict[Text, float]]
