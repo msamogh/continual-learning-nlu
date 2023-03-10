@@ -7,6 +7,7 @@ from typing import *
 from sklearn.model_selection import train_test_split
 
 from cl_domain.config import get_args
+from cl_domain.train import get_dataloader
 from cl_domain.utils import GLOBAL_RAND
 
 
@@ -71,33 +72,41 @@ class Domain:
                             continue
                         domain = domains[0]
                         if domain not in domain_wise_samples:
-                            domain_wise_samples[domain] = Domain(dataset, domain)
+                            domain_wise_samples[domain] = Domain(dataset,
+                                                                 domain)
 
                         # Every turn in a dialogue
                         for idx, turn in enumerate(dialogue["dialogue"]):
                             if turn["spk"] == "API":
                                 # If immediately preceded by a user turn
                                 if (
-                                    idx > 0 and
-                                    dialogue["dialogue"][idx - 1]["spk"] == "USER" and
-                                    "(" in turn["utt"]
+                                        idx > 0 and
+                                        dialogue["dialogue"][idx - 1][
+                                            "spk"] == "USER" and
+                                        "(" in turn["utt"]
                                 ):
                                     # Consider all utterances within a fixed window as the context.
                                     if ctx_window_size is None:
                                         context = [
                                             Turn(speaker=turn["spk"],
                                                  utterance=turn["utt"])
-                                            for turn in dialogue["dialogue"][:idx]
+                                            for turn in
+                                            dialogue["dialogue"][:idx]
                                         ]
                                     else:
                                         context = [
-                                            Turn(speaker=turn["spk"], utterance=turn["utt"])
-                                            for turn in dialogue["dialogue"][idx - ctx_window_size + 1:idx]
+                                            Turn(speaker=turn["spk"],
+                                                 utterance=turn["utt"])
+                                            for turn in dialogue["dialogue"][
+                                                        idx - ctx_window_size + 1:idx]
                                         ]
-                                    domain_wise_samples[domain].splits[split].append(
+                                    domain_wise_samples[domain].splits[
+                                        split].append(
                                         Sample(
                                             context=context,
-                                            intent_label=turn["utt"][:turn["utt"].index("(")],
+                                            intent_label=turn["utt"][
+                                                         :turn["utt"].index(
+                                                             "(")],
                                             domain=domain
                                         )
                                     )
@@ -117,18 +126,21 @@ class DomainSplit:
     test_utterances: List[Sample]
 
     @classmethod
-    def subsample(cls, domain: Domain, n: Union[int, float], test_size: float = 0.2) -> "DomainSplit":
+    def get_fixed_n_split(cls, domain: Domain, n: Union[int, float], test_size: float, val_size: float) -> "DomainSplit":
+        """First, combine the train, val, and test splits. Then, split the
+        combined splits into train and test splits. Finally, split the train
+        split into train and val splits."""
         if isinstance(n, float):
             n = int(len(domain.splits) // n)
-        train_utterances = domain.splits["train"][:n]
+
+        train_utterances = domain.splits["train"]
         val_utterances = domain.splits["valid"]
         test_utterances = domain.splits["test"]
+        combined_utterances = train_utterances + val_utterances + test_utterances
+
+        train_utterances, test_utterances = train_test_split(
+            combined_utterances, test_size=test_size, random_state=42)
+        train_utterances, val_utterances = train_test_split(train_utterances, test_size=val_size / (1 - test_size), random_state=42)
+
         return cls(domain, train_utterances, val_utterances, test_utterances)
 
-
-if __name__ == "__main__":
-    args = get_args()
-    domain_wise_samples = Domain.generate_samples()
-    for sample in domain_wise_samples:
-        print(sample)
-    print("done")
