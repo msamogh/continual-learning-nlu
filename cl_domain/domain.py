@@ -6,9 +6,6 @@ from typing import *
 
 from sklearn.model_selection import train_test_split
 
-from cl_domain.config import get_args
-from cl_domain.train import get_dataloader
-from cl_domain.utils import GLOBAL_RAND
 
 
 @dataclass
@@ -54,7 +51,7 @@ class Domain:
         default_factory=lambda: defaultdict(list))
 
     @staticmethod
-    def generate_samples(ctx_window_size: Optional[int] = None):
+    def generate_samples(ctx_window_size: Optional[int] = None) -> Dict[Text, "Domain"]:
         domain_wise_samples = {}
         # Every dataset
         for dataset in ("sgd",):  # ("multiwoz", "sgd", "tm_2019", "tm_2020"):
@@ -121,9 +118,9 @@ class DomainSplit:
     useful for evaluating the performance of a train on a subset of a data.
     """
     domain: Domain
-    train_utterances: List[Sample]
-    val_utterances: List[Sample]
-    test_utterances: List[Sample]
+    train_samples: List[Sample]
+    val_samples: List[Sample]
+    test_samples: List[Sample]
 
     @classmethod
     def get_fixed_n_split(cls, domain: Domain, n: Union[int, float], test_size: float, val_size: float) -> "DomainSplit":
