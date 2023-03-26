@@ -26,10 +26,10 @@ def avg_forgetting(results: "ExperimentResults") -> float:
 
 
 def avg_accuracy(results: "ExperimentResults") -> float:
+    accuracieslist = []
     for accuracies in results.cl_run_accuracies:
-        pass
-    return 0
-
+        accuracieslist.append(accuracies)
+    return np.average(accuracieslist)
 
 if __name__ == "__main__":
     pass
