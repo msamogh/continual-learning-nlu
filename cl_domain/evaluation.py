@@ -5,7 +5,7 @@ import numpy as np
 from cl_domain.domain import *
 
 
-def avg_forgetting(results: "ExperimentResults") -> float:
+def avg_forgetting(results: "CLRunResult") -> float:
     """Calculate the average forgetting.
 
     Forgetting is defined as the average difference between the best accuracy
@@ -25,11 +25,11 @@ def avg_forgetting(results: "ExperimentResults") -> float:
     ])
 
 
-def avg_accuracy(results: "ExperimentResults") -> float:
+def avg_accuracy(results: "CLRunResult") -> float:
+    accuracieslist = []
     for accuracies in results.cl_run_accuracies:
-        pass
-    return 0
-
+        accuracieslist.append(accuracies)
+    return np.average(accuracieslist)
 
 if __name__ == "__main__":
     pass
