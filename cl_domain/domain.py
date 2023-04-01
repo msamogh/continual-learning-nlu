@@ -58,7 +58,7 @@ class Domain:
             # Every split in a dataset
             for split in ("train", "valid", "test"):
                 # Every file in a split
-                with (Path("../data") / dataset / f"{split}.json").open(
+                with (Path("./data") / dataset / f"{split}.json").open(
                         "r") as f:
                     dialogues = json.load(f)
                     # Ever dialogue in a file
