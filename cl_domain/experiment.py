@@ -7,6 +7,7 @@ from cl_domain.train import get_dataloader, TOKENIZER
 
 @dataclass(frozen=True)
 class CLRunInput:
+    label: Text
     domain_ordering: List[Domain]
     domain_wise_splits: Dict[Text, DomainSplit]
 

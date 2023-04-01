@@ -29,22 +29,31 @@ def get_training_args(args: Dict[Text, Any]):
 
 
 def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput"):
-    for (domain, domain_wise_dataloader) in cl_run_input.get_ordered_dataloaders(args):
+    for domain_idx, (domain, domain_wise_dataloader) in enumerate(
+            cl_run_input.get_ordered_dataloaders(args)
+    ):
+        print(f"Training {domain.domain_name}.")
         train_dl, val_dl, test_dl = (
             domain_wise_dataloader["train"],
             domain_wise_dataloader["val"],
             domain_wise_dataloader["test"]
         )
+        # If domain_idx == 0, then we are training on the first domain.
+        # Else load the checkpoint from the previous domain.
+
+        if domain_idx == 0:
+            model = MODEL
+        else:
+            model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{cl_run_input.label}/{cl_run_input.domain_ordering[domain_idx - 1].domain_name}")
+
         trainer = Trainer(
-            model=MODEL,
+            model=model,
             args=training_args,
             train_dataset=train_dl,
             eval_dataset=val_dl,
-            # data_collator=lambda data: {
-            #     'input_ids': torch.stack([f[0] for f in data]),
-            #     'attention_mask': torch.stack([f[1] for f in data]),
-            #     'labels': torch.stack([f[0] for f in data])
-            # }
         )
         trainer.train()
         metrics = trainer.evaluate(test_dl)
+
+        # Save checkpoint
+        model.save_pretrained(f"../cl_checkpoints/{cl_run_input.label}/{domain.domain_name}")

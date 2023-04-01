@@ -1,4 +1,10 @@
+import pickle
+import random
+from pathlib import Path
 from typing import *
+
+import pickle
+import randomname
 
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
@@ -7,9 +13,16 @@ from cl_domain.train import continually_train, get_training_args
 from domain_ordering import ORDERINGS
 
 
-def generate_experiment_input(args):
+def generate_experiment_input(args: Dict[Text, Any], label: Text) -> CLRunInput:
     # Get all data samples.
     domains: Dict[Text, Domain] = Domain.generate_samples(args["ctx_window_size"])
+
+    # Randomly sample a subset of domains.
+    domains = {
+        domain_name: domain
+        for domain_name, domain in random.sample(list(domains.items()), args["num_domains_per_run"])
+    }
+
     # Split each domain into train, val, and test.
     subsamples = {
         domain_name: DomainSplit.get_fixed_n_split(domain, args["train_samples_per_domain"], args["test_size_per_domain"], args["val_size_per_domain"])
@@ -22,6 +35,7 @@ def generate_experiment_input(args):
 
     # Assemble a CLRunInput object and return it.
     return CLRunInput(
+        label=label,
         domain_ordering=ordering,
         domain_wise_splits=subsamples
     )
@@ -30,13 +44,35 @@ def generate_experiment_input(args):
 if __name__ == "__main__":
     args = get_args()
 
-    # Generate domain ordering and domain-wise splits.
-    cl_run_input = generate_experiment_input(args)
+    if args["mode"] == "generate_data":
+        # Generate domain ordering and domain-wise splits.
+        # Generate both a pickle and a text file with the ordering.
+        base_run_dir = Path(f"../cl_runs/{args['ordering']}-{randomname.get_name()}")
+        if not Path(base_run_dir).exists():
+            Path(base_run_dir).mkdir(parents=True)
+        # Generate cl_run_inputs for num_runs runs.
+        for i in range(args["num_runs"]):
+            cl_run_label = f"run_{i}"
+            cl_run_input = generate_experiment_input(args, cl_run_label)
+            pickle.dump(cl_run_input, open(f"{base_run_dir}/{cl_run_label}.pkl", "wb"))
+            with open(f"{base_run_dir}/{cl_run_label}.txt", "w") as f:
+                # Write domain names of the ordering in each line.
+                f.write("\n".join([domain.domain_name for domain in cl_run_input.domain_ordering]))
 
-    # Initialize HuggingFace Trainer
-    training_args = get_training_args(args)
+        print("Data generation finished.")
 
-    # Calling .fit() on the trainer will train the model on the training set.
-    continually_train(args, training_args, cl_run_input)
+    elif args["mode"] == "train":
+        # Initialize HuggingFace Trainer
+        training_args = get_training_args(args)
+        cl_run_label = args["cl_run_label"]
 
-    print("Done")
+        # Read all cl_run_inputs from one particular ordering and
+        # continually train them one by one.
+        for cl_run_label in Path(f"../cl_runs/{args['ordering']}").glob("*.pkl"):
+            cl_run_input = pickle.load(open(cl_run_label, "rb"))
+            continually_train(args, training_args, cl_run_input)
+
+        print("Training finished.")
+
+    else:
+        raise ValueError(f"Unknown mode {args['mode']}.")

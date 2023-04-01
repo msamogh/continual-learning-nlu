@@ -9,7 +9,7 @@ from transformers import T5Tokenizer
 def get_dataloader(args, cl_run_input: "CLRunInput", domain_name: Text, split: Text, tokenizer):
     # For domain "domain_name", get the train, val, and test splits.
     all_samples = cl_run_input.domain_wise_splits[domain_name]
-    # TODO convert to training sample
+
     # We use train_utterances, val_utterances, and test_utterances.
     if split == "train":
         split_samples = all_samples.train_samples
