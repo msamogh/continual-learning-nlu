@@ -5,7 +5,7 @@ def get_args():
     args = argparse.ArgumentParser()
 
     args.add_argument("--mode", type=str, help="Mode to run in")
-    args.add_argument("--cl_run_label", required=False, type=str, help="Label of the CL run to use")
+    args.add_argument("--cl_super_run_label", required=False, type=str, help="Superlabel of the CL run to use")
 
     add_experiment_args(args)
     add_dataloader_args(args)

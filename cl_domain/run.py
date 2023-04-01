@@ -64,11 +64,11 @@ if __name__ == "__main__":
     elif args["mode"] == "train":
         # Initialize HuggingFace Trainer
         training_args = get_training_args(args)
-        cl_run_label = args["cl_run_label"]
 
         # Read all cl_run_inputs from one particular ordering and
         # continually train them one by one.
-        for cl_run_label in Path(f"../cl_runs/{args['ordering']}").glob("*.pkl"):
+        for cl_run_label in Path(f"../cl_runs/{args['cl_super_run_label']}").glob("*.pkl"):
+            print(f"Training {args['cl_super_run_label']}/{cl_run_label.stem}...")
             cl_run_input = pickle.load(open(cl_run_label, "rb"))
             continually_train(args, training_args, cl_run_input)
 
