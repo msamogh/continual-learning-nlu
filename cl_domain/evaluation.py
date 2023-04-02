@@ -5,6 +5,10 @@ import numpy as np
 from cl_domain.domain import *
 
 
+def compute_metrics(eval_pred):
+    print(eval_pred)
+
+
 def avg_forgetting(results: "CLRunResult") -> float:
     """Calculate the average forgetting.
 
@@ -26,10 +30,13 @@ def avg_forgetting(results: "CLRunResult") -> float:
 
 
 def avg_accuracy(results: "CLRunResult") -> float:
-    accuracieslist = []
-    for accuracies in results.cl_run_accuracies:
-        accuracieslist.append(accuracies)
-    return np.average(accuracieslist)
+    """Calculate the average accuracy.
+
+    In a continual learning setting, this is the average accuracy across all
+    domains at the end of training.
+    """
+    return np.average(results.cl_run_accuracies[-1].values())
+
 
 if __name__ == "__main__":
     pass

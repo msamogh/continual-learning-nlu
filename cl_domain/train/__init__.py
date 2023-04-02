@@ -5,6 +5,7 @@ from datasets import Dataset
 from transformers import T5Tokenizer, \
     T5ForConditionalGeneration, Trainer, TrainingArguments
 
+from cl_domain.evaluation import compute_metrics
 from cl_domain.train.dataloader import get_dataloader
 
 MODEL_NAME = "t5-small"
@@ -29,6 +30,9 @@ def get_training_args(args: Dict[Text, Any]):
 
 
 def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput"):
+    from cl_domain.experiment import CLRunResult
+    cl_result = CLRunResult(cl_run_input=cl_run_input, cl_run_accuracies=[])
+
     for domain_idx, (domain, domain_wise_dataloader) in enumerate(
             cl_run_input.get_ordered_dataloaders(args)
     ):
@@ -38,22 +42,23 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
             domain_wise_dataloader["val"],
             domain_wise_dataloader["test"]
         )
+
         # If domain_idx == 0, then we are training on the first domain.
         # Else load the checkpoint from the previous domain.
-
         if domain_idx == 0:
             model = MODEL
         else:
-            model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{cl_run_input.label}/{cl_run_input.domain_ordering[domain_idx - 1].domain_name}")
+            model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx - 1}")
 
         trainer = Trainer(
             model=model,
             args=training_args,
             train_dataset=train_dl,
             eval_dataset=val_dl,
+            compute_metrics=compute_metrics
         )
         trainer.train()
         metrics = trainer.evaluate(test_dl)
 
         # Save checkpoint
-        model.save_pretrained(f"../cl_checkpoints/{cl_run_input.label}/{domain.domain_name}")
+        model.save_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx}")

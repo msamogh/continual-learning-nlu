@@ -8,12 +8,11 @@ import randomname
 
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
-from cl_domain.experiment import CLRunInput
 from cl_domain.train import continually_train, get_training_args
 from domain_ordering import ORDERINGS
 
 
-def generate_experiment_input(args: Dict[Text, Any], label: Text) -> CLRunInput:
+def generate_experiment_input(args: Dict[Text, Any], label: Text) -> "CLRunInput":
     # Get all data samples.
     domains: Dict[Text, Domain] = Domain.generate_samples(args["ctx_window_size"])
 
@@ -34,6 +33,7 @@ def generate_experiment_input(args: Dict[Text, Any], label: Text) -> CLRunInput:
     ordering = ordering_fn(domains)
 
     # Assemble a CLRunInput object and return it.
+    from cl_domain.experiment import CLRunInput
     return CLRunInput(
         label=label,
         domain_ordering=ordering,
@@ -47,7 +47,8 @@ if __name__ == "__main__":
     if args["mode"] == "generate_data":
         # Generate domain ordering and domain-wise splits.
         # Generate both a pickle and a text file with the ordering.
-        base_run_dir = Path(f"../cl_runs/{args['ordering']}-{randomname.get_name()}")
+        super_run_label = randomname.get_name()
+        base_run_dir = Path(f"../cl_runs/{args['ordering']}-{super_run_label}")
         if not Path(base_run_dir).exists():
             Path(base_run_dir).mkdir(parents=True)
         # Generate cl_run_inputs for num_runs runs.
@@ -59,7 +60,7 @@ if __name__ == "__main__":
                 # Write domain names of the ordering in each line.
                 f.write("\n".join([domain.domain_name for domain in cl_run_input.domain_ordering]))
 
-        print("Data generation finished.")
+        print(f"Finished generating: {super_run_label}")
 
     elif args["mode"] == "train":
         # Initialize HuggingFace Trainer
