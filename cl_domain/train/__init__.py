@@ -55,7 +55,6 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
             args=training_args,
             train_dataset=train_dl,
             eval_dataset=val_dl,
-            compute_metrics=compute_metrics
         )
         trainer.train()
         metrics = trainer.evaluate(test_dl)

@@ -5,8 +5,32 @@ import numpy as np
 from cl_domain.domain import *
 
 
-def compute_metrics(eval_pred):
-    print(eval_pred)
+from transformers import EvalPrediction
+
+
+def create_compute_metrics(tokenizer):
+    def compute_metrics(eval_pred: EvalPrediction):
+        logits, labels = eval_pred.predictions, eval_pred.label_ids
+
+        # Find the indices with the highest probabilities along the last axis
+        preds = np.argmax(logits, axis=-1)
+
+        # Convert token ids back to text labels
+        preds_texts = [tokenizer.decode(pred, skip_special_tokens=True) for pred
+                       in preds]
+        labels_texts = [tokenizer.decode(label, skip_special_tokens=True) for
+                        label in labels]
+
+        # Compare predicted labels with ground truth labels
+        correct_predictions = np.array(
+            [pred == label for pred, label in zip(preds_texts, labels_texts)])
+
+        # Calculate accuracy
+        accuracy = np.sum(correct_predictions) / len(labels_texts)
+
+        return {"accuracy": accuracy}
+
+    return compute_metrics
 
 
 def avg_forgetting(results: "CLRunResult") -> float:
