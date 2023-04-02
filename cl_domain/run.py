@@ -24,7 +24,7 @@ def generate_experiment_input(args: Dict[Text, Any], label: Text) -> "CLRunInput
 
     # Split each domain into train, val, and test.
     subsamples = {
-        domain_name: DomainSplit.get_fixed_n_split(domain, args["train_samples_per_domain"], args["test_size_per_domain"], args["val_size_per_domain"])
+        domain_name: DomainSplit.get_fixed_n_split(domain, args["limit_n_samples"], args["test_size_per_domain"], args["val_size_per_domain"])
         for domain_name, domain in domains.items()
     }
 

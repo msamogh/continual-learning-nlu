@@ -123,17 +123,16 @@ class DomainSplit:
     test_samples: List[Sample]
 
     @classmethod
-    def get_fixed_n_split(cls, domain: Domain, n: Union[int, float], test_size: float, val_size: float) -> "DomainSplit":
+    def get_fixed_n_split(cls, domain: Domain, limit_n_samples: int, test_size: float, val_size: float) -> "DomainSplit":
         """First, combine the train, val, and test splits. Then, split the
         combined splits into train and test splits. Finally, split the train
         split into train and val splits."""
-        if isinstance(n, float):
-            n = int(len(domain.splits) // n)
-
         train_utterances = domain.splits["train"]
         val_utterances = domain.splits["valid"]
         test_utterances = domain.splits["test"]
         combined_utterances = train_utterances + val_utterances + test_utterances
+        if limit_n_samples != 0:
+            combined_utterances = combined_utterances[:limit_n_samples]
 
         train_utterances, test_utterances = train_test_split(
             combined_utterances, test_size=test_size, random_state=42)

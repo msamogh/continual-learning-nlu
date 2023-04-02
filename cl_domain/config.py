@@ -31,8 +31,8 @@ def add_tokenizer_args(args):
 
 
 def add_dataloader_args(args):
-    args.add_argument("--train_samples_per_domain", type=int, default=100,
-                      help="Number of samples to use for training")
+    args.add_argument("--limit_n_samples", type=int, default=100,
+                      help="Limit the number of total samples per domain")
     args.add_argument("--val_size_per_domain", type=float, default=0.15,
                       help="Percentage of samples to use for validation")
     args.add_argument("--test_size_per_domain", type=float, default=0.25,
