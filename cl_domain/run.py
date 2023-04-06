@@ -8,7 +8,7 @@ import randomname
 
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
-from cl_domain.train import continually_train, get_training_args
+from cl_domain.train import continually_train, get_training_args, evaluate
 from domain_ordering import ORDERINGS
 
 
@@ -76,8 +76,18 @@ if __name__ == "__main__":
         print("Training finished.")
 
     elif args["mode"] == "evaluate":
-        training_args = get_training_args(args)
-        evaluate(args, training_args)
+        # Initialize HuggingFace Trainer
+        eval_args = get_training_args(args)
 
+        # Read all cl_run_inputs from one particular ordering and
+        # continually evaluate them one by one.
+        for cl_run_label in Path(
+                f"../cl_runs/{args['cl_super_run_label']}").glob("*.pkl"):
+            print(
+                f"Evaluating {args['cl_super_run_label']}/{cl_run_label.stem}...")
+            cl_run_input = pickle.load(open(cl_run_label, "rb"))
+            evaluate(args, eval_args, cl_run_input)
+
+        print("Training finished.")
     else:
         raise ValueError(f"Unknown mode {args['mode']}.")
