@@ -20,7 +20,7 @@ def add_cl_run_args(args):
     args.add_argument("--num_runs", type=int, default=5, help="Number of CL runs to perform")
 
 def add_experiment_args(args):
-    args.add_argument("--ordering", type=str, default="random", help="Domain ordering to use")
+    args.add_argument("--ordering_strategy", type=str, default="random", help="Domain ordering to use")
 
 
 def add_tokenizer_args(args):
