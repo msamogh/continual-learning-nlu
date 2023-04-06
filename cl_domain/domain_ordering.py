@@ -1,5 +1,6 @@
 from typing import *
 import numpy as np
+import pandas as pd
 
 from cl_domain.domain import Domain
 from cl_domain.utils import GLOBAL_RAND
@@ -45,48 +46,17 @@ def max_path_ordering(domains: Dict[Text, str]) -> List[int]:
     """Generate a domain ordering that maximizes the number of paths between
     domains.
     """
-    # domain_keys = list(domains.keys())[:10]
-    # domain_values = list(domains.values())[:10]
-    # embedding_fn = EmbeddingFn()
-    # clustering_fn = Clusterer()
-    # distance_fn = DomainSimilarityMetric()
-    # embedding_per_domain = embedding_fn(domain_values)
-    # centroid_per_domain = clustering_fn(embedding_per_domain)
-    # distance_matrix = -distance_fn(centroid_per_domain)
-    # distance_matrix = np.random.rand(10, 10)
-    # distance_matrix = np.triu(distance_matrix) + np.triu(distance_matrix, k=1).T
-    # np.fill_diagonal(distance_matrix, 0)
-
     df = pd.read_csv('distance_matrix.csv')
     domain_keys = df.columns.tolist()
     distance_matrix = -df.iloc[:, 1:].values
-
-
     max_distance, max_path = tsp_bruteforce(distance_matrix)
     return [domain_keys[idx] for idx in max_path[:-1]]
 
-    # domain_distance_matrix: np.ndarray = ClusteringMetric.similarity(domain_values)
-
-    return domains
-
 
 def min_path_ordering(domains: Dict[Text, str]) -> List[int]:
-    # domain_keys = list(domains.keys())[:10]
-    # domain_values = list(domains.values())[:10]
-    # embedding_fn = EmbeddingFn()
-    # clustering_fn = Clusterer()
-    # distance_fn = DomainSimilarityMetric()
-    # embedding_per_domain = embedding_fn(domain_values)
-    # centroid_per_domain = clustering_fn(embedding_per_domain)
-    # distance_matrix = distance_fn(centroid_per_domain)
-    # distance_matrix = np.random.rand(10, 10)
-    # distance_matrix = np.triu(distance_matrix) + np.triu(distance_matrix, k=1).T
-    # np.fill_diagonal(distance_matrix, 0)
-
     df = pd.read_csv('distance_matrix.csv')
     domain_keys = df.columns.tolist()
     distance_matrix = df.iloc[:, 1:].values
-
     min_distance, min_path = tsp_bruteforce(distance_matrix)
     return [domain_keys[idx] for idx in min_path[:-1]]
 
