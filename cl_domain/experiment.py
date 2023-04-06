@@ -26,4 +26,4 @@ class CLRunInput:
 @dataclass(frozen=True)
 class CLRunResult:
     cl_run_input: CLRunInput
-    cl_run_accuracies: List[Dict[Text, float]]
+    step_wise_domain_wise_results: List[Dict[Text, Any]]
