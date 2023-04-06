@@ -2,7 +2,6 @@ from cl_domain.domain import *
 
 import torch.utils.data as data
 
-from cl_domain.train import get_dataloader, TOKENIZER
 
 
 @dataclass(frozen=True)
@@ -12,6 +11,8 @@ class CLRunInput:
     domain_wise_splits: Dict[Text, DomainSplit]
 
     def get_ordered_dataloaders(self, args) -> Iterable[Tuple[Domain, Dict[Text, data.DataLoader]]]:
+        from train import get_dataloader
+        from train import TOKENIZER
         domain_wise_dataloaders = {
             domain.domain_name: {
                 split: get_dataloader(args, self, domain.domain_name, split, TOKENIZER)

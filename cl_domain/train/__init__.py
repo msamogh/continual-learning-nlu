@@ -88,5 +88,5 @@ def evaluate(args, training_args, cl_run_input) -> CLRunResult:
             eval_dataset=test_dl,
         )
         metrics = trainer.evaluate()
-        result.step_wise_domain_wise_results[domain_idx] = metrics
+        result.step_wise_domain_wise_results.append(metrics)
     return result
