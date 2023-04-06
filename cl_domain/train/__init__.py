@@ -2,10 +2,11 @@ from typing import *
 
 import torch
 from datasets import Dataset
+from experiment import CLRunResult
 from transformers import T5Tokenizer, \
     T5ForConditionalGeneration, Trainer, TrainingArguments
 
-from cl_domain.evaluation import compute_metrics
+from cl_domain.evaluation import create_compute_metrics
 from cl_domain.train.dataloader import get_dataloader
 
 MODEL_NAME = "t5-small"
@@ -29,9 +30,10 @@ def get_training_args(args: Dict[Text, Any]):
     )
 
 
-def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput"):
+def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput") -> Dict[Text, Any]:
     from cl_domain.experiment import CLRunResult
-    cl_result = CLRunResult(cl_run_input=cl_run_input, cl_run_accuracies=[])
+
+    print(f"PHASE 1: Training on all domains.")
 
     for domain_idx, (domain, domain_wise_dataloader) in enumerate(
             cl_run_input.get_ordered_dataloaders(args)
@@ -57,7 +59,34 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
             eval_dataset=val_dl,
         )
         trainer.train()
-        metrics = trainer.evaluate(test_dl)
 
         # Save checkpoint
         model.save_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx}")
+
+    return evaluate(args, training_args, cl_run_input)
+
+
+def evaluate(args, training_args, cl_run_input) -> CLRunResult:
+    print(f"PHASE 2: Evaluating.")
+    result = CLRunResult(cl_run_input=cl_run_input, step_wise_domain_wise_results=[])
+    for domain_idx, (domain, domain_wise_dataloader) in enumerate(
+            cl_run_input.get_ordered_dataloaders(args)
+    ):
+        print(f"Evaluating {domain.domain_name}.")
+        train_dl, val_dl, test_dl = (
+            domain_wise_dataloader["train"],
+            domain_wise_dataloader["val"],
+            domain_wise_dataloader["test"]
+        )
+
+        model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx}")
+
+        trainer = Trainer(
+            model=model,
+            args=training_args,
+            train_dataset=train_dl,
+            eval_dataset=test_dl,
+        )
+        metrics = trainer.evaluate()
+        result.step_wise_domain_wise_results[domain_idx] = metrics
+    return result
