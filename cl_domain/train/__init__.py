@@ -30,7 +30,7 @@ def get_training_args(args: Dict[Text, Any]):
     )
 
 
-def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput"):
+def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput") -> None:
     from cl_domain.experiment import CLRunResult
 
     print(f"PHASE 1: Training on all domains.")
@@ -64,7 +64,7 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
         model.save_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx}")
 
 
-def evaluate(args, training_args, cl_run_input) -> CLRunResult:
+def evaluate(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput") -> CLRunResult:
     print(f"PHASE 2: Evaluating.")
     result = CLRunResult(cl_run_input=cl_run_input, step_wise_domain_wise_results=[])
     for domain_idx, (domain, domain_wise_dataloader) in enumerate(
@@ -84,6 +84,7 @@ def evaluate(args, training_args, cl_run_input) -> CLRunResult:
             args=training_args,
             train_dataset=train_dl,
             eval_dataset=test_dl,
+            compute_metrics=create_compute_metrics(TOKENIZER)
         )
         metrics = trainer.evaluate()
         result.step_wise_domain_wise_results.append(metrics)
