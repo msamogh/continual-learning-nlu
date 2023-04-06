@@ -30,7 +30,7 @@ def get_training_args(args: Dict[Text, Any]):
     )
 
 
-def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput") -> Dict[Text, Any]:
+def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput"):
     from cl_domain.experiment import CLRunResult
 
     print(f"PHASE 1: Training on all domains.")
@@ -50,7 +50,7 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
         if domain_idx == 0:
             model = MODEL
         else:
-            model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx - 1}")
+            model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx - 1}")
 
         trainer = Trainer(
             model=model,
@@ -61,9 +61,7 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
         trainer.train()
 
         # Save checkpoint
-        model.save_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx}")
-
-    return evaluate(args, training_args, cl_run_input)
+        model.save_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx}")
 
 
 def evaluate(args, training_args, cl_run_input) -> CLRunResult:
@@ -79,7 +77,7 @@ def evaluate(args, training_args, cl_run_input) -> CLRunResult:
             domain_wise_dataloader["test"]
         )
 
-        model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/after_{domain_idx}")
+        model = T5ForConditionalGeneration.from_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx}")
 
         trainer = Trainer(
             model=model,

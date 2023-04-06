@@ -75,5 +75,9 @@ if __name__ == "__main__":
 
         print("Training finished.")
 
+    elif args["mode"] == "evaluate":
+        training_args = get_training_args(args)
+        evaluate(args, training_args)
+
     else:
         raise ValueError(f"Unknown mode {args['mode']}.")
