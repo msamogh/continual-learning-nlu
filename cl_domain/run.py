@@ -48,7 +48,7 @@ if __name__ == "__main__":
         # Generate domain ordering and domain-wise splits.
         # Generate both a pickle and a text file with the ordering.
         super_run_label = randomname.get_name()
-        base_run_dir = Path(f"../cl_runs/{args['ordering']}-{super_run_label}")
+        base_run_dir = Path(f"../cl_runs/{args['ordering_strategy']}-{super_run_label}")
         if not Path(base_run_dir).exists():
             Path(base_run_dir).mkdir(parents=True)
         # Generate cl_run_inputs for num_runs runs.
