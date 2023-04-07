@@ -9,7 +9,7 @@ from transformers import T5Tokenizer, \
 from cl_domain.evaluation import create_compute_metrics
 from cl_domain.train.dataloader import get_dataloader
 
-MODEL_NAME = "google/flan-t5-base"
+MODEL_NAME = "t5-base"
 MODEL = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
 TOKENIZER = T5Tokenizer.from_pretrained(MODEL_NAME)
 
