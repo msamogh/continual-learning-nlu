@@ -23,7 +23,7 @@ def get_dataloader(args, cl_run_input: "CLRunInput", domain_name: Text, split: T
     tokenized_samples = [{
         "input_ids": tokenizer(sample.model_input, padding="max_length", truncation=True,  max_length=args["input_max_length"], return_tensors="pt")["input_ids"][0],
         "labels": tokenizer(sample.model_output, padding="max_length", truncation=True,  max_length=args["input_max_length"], return_tensors="pt")["input_ids"][0],
-    } for sample in split_samples][:10]
+    } for sample in split_samples]
 
     dataset = Dataset.from_list(tokenized_samples)
     return dataset
