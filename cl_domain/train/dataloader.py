@@ -21,9 +21,15 @@ def get_dataloader(args, cl_run_input: "CLRunInput", domain_name: Text, split: T
         raise ValueError(f"Invalid split {split}.")
 
     tokenized_samples = [{
-        "input_ids": tokenizer(sample.model_input, padding="max_length", truncation=True,  max_length=args["input_max_length"], return_tensors="pt")["input_ids"][0],
+        "input_ids": tokenizer(sample.model_input, padding="max_length", truncation=True,  max_length=args["input_max_length"], return_tensors="pt", add_special_tokens=False)["input_ids"][0],
         "labels": tokenizer(sample.model_output, padding="max_length", truncation=True,  max_length=args["input_max_length"], return_tensors="pt")["input_ids"][0],
     } for sample in split_samples]
+
+    # Detoeknize the samples.
+    for sample in tokenized_samples:
+        print(tokenizer.decode(sample["input_ids"]))
+        print(tokenizer.decode(sample["labels"]))
+        print()
 
     dataset = Dataset.from_list(tokenized_samples)
     return dataset
