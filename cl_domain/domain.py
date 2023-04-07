@@ -26,19 +26,17 @@ class Sample:
 
     @property
     def model_input(self):
-        tokenized = "classify: "
+        tokenized = "classify intent: "
         for turn in self.context:
             tokenized += f"{turn.speaker}: {turn.utterance} {self.sep_token} "
         tokenized = f'{self.task_prefix} {tokenized}'
-        tokenized = tokenized.strip().replace("  ", " ") + " label: "
+        tokenized = tokenized.strip().replace("  ", " ") + " intent: "
         return tokenized
 
     @property
     def model_output(self):
         # Convert title case (e.g., "MakeBooking") to snake case (e.g., "make_booking").
-        return self.intent_label[0].lower() + "".join(
-            [f"_{c.lower()}" if c.isupper() else c for c in self.intent_label[1:]])
-
+        return self.intent_label.lower()
 
 
 @dataclass(frozen=True)
