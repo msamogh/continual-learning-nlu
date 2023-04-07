@@ -88,6 +88,6 @@ if __name__ == "__main__":
             cl_run_input = pickle.load(open(cl_run_label, "rb"))
             evaluate(args, eval_args, cl_run_input)
 
-        print("Training finished.")
+        print("Evaluation finished.")
     else:
         raise ValueError(f"Unknown mode {args['mode']}.")

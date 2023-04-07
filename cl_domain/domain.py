@@ -37,7 +37,7 @@ class Sample:
     def model_output(self):
         # Convert title case (e.g., "MakeBooking") to snake case (e.g., "make_booking").
         return self.intent_label[0].lower() + "".join(
-            [f"_{c.lower()}" if c.isupper() else c for c in self.intent_label[1:]])
+            [f" {c.lower()}" if c.isupper() else c for c in self.intent_label[1:]])
 
 
 
