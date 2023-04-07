@@ -35,28 +35,32 @@ def tsp_bruteforce(distance_matrix, start_node=0):
     return min_distance, min_path
 
 
-def random_ordering(domains: Dict[Text, Domain]) -> List[Domain]:
+def random_ordering(domains: Dict[Text, Domain]) ->  List[str]:
     """Generate a random ordering of domains."""
-    domains = list(domains.values())
+    domains = list(domains.keys())
     GLOBAL_RAND.shuffle(domains)
     return domains
 
 
-def max_path_ordering(domains: Dict[Text, str]) -> List[int]:
+def max_path_ordering(domains: Dict[Text, str]) -> List[str]:
     """Generate a domain ordering that maximizes the number of paths between
     domains.
     """
-    df = pd.read_csv('distance_matrix.csv')
+    df = pd.read_csv('./distance_matrix.csv', index_col=0)
+    row_col_to_drop = set(df.columns) - set(domains.keys())
+    df = df.drop(row_col_to_drop, axis=1).drop(row_col_to_drop, axis=0)
     domain_keys = df.columns.tolist()
-    distance_matrix = -df.iloc[:, 1:].values
+    distance_matrix = -df.iloc[:, :].values
     max_distance, max_path = tsp_bruteforce(distance_matrix)
     return [domain_keys[idx] for idx in max_path[:-1]]
 
 
-def min_path_ordering(domains: Dict[Text, str]) -> List[int]:
-    df = pd.read_csv('../distance_matrix.csv')
+def min_path_ordering(domains: Dict[Text, str]) -> List[str]:
+    df = pd.read_csv('./distance_matrix.csv', index_col=0)
+    row_col_to_drop = set(df.columns) - set(domains.keys())
+    df = df.drop(row_col_to_drop, axis=1).drop(row_col_to_drop, axis=0)
     domain_keys = df.columns.tolist()
-    distance_matrix = df.iloc[:, 1:].values
+    distance_matrix = df.iloc[:, :].values
     min_distance, min_path = tsp_bruteforce(distance_matrix)
     return [domain_keys[idx] for idx in min_path[:-1]]
 
