@@ -35,7 +35,7 @@ class Sample:
 
     @property
     def model_output(self):
-        return f"{self.intent_label} {self.sep_token}".strip()
+        return self.intent_label
 
 
 @dataclass(frozen=True)
