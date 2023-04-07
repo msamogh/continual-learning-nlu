@@ -86,7 +86,8 @@ if __name__ == "__main__":
             print(
                 f"Evaluating {args['cl_super_run_label']}/{cl_run_label.stem}...")
             cl_run_input = pickle.load(open(cl_run_label, "rb"))
-            evaluate(args, eval_args, cl_run_input)
+            result = evaluate(args, eval_args, cl_run_input)
+            print(result.step_wise_domain_wise_results)
 
         print("Evaluation finished.")
     else:
