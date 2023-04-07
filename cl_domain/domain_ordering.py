@@ -35,9 +35,9 @@ def tsp_bruteforce(distance_matrix, start_node=0):
     return min_distance, min_path
 
 
-def random_ordering(domains: Dict[Text, Domain]) ->  List[str]:
+def random_ordering(domains: Dict[Text, Domain]) -> List[Domain]:
     """Generate a random ordering of domains."""
-    domains = list(domains.keys())
+    domains = list(domains.values())
     GLOBAL_RAND.shuffle(domains)
     return domains
 
