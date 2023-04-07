@@ -26,10 +26,10 @@ def get_dataloader(args, cl_run_input: "CLRunInput", domain_name: Text, split: T
     } for sample in split_samples]
 
     # Detoeknize the samples.
-    for sample in tokenized_samples:
-        print(tokenizer.decode(sample["input_ids"]))
-        print(tokenizer.decode(sample["labels"]))
-        print()
+    # for sample in tokenized_samples:
+    #     print(tokenizer.decode(sample["input_ids"]))
+    #     print(tokenizer.decode(sample["labels"]))
+    #     print()
 
     dataset = Dataset.from_list(tokenized_samples)
     return dataset
