@@ -30,7 +30,7 @@ def generate_experiment_input(args: Dict[Text, Any], label: Text) -> "CLRunInput
 
     # Order the domains.
     ordering_fn = ORDERINGS[args["ordering_strategy"]]
-    ordering = ordering_fn(domains)
+    ordering = [domains[key] for key in ordering_fn(domains)]
 
     # Assemble a CLRunInput object and return it.
     from cl_domain.experiment import CLRunInput
