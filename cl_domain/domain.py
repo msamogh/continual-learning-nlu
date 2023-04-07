@@ -30,12 +30,12 @@ class Sample:
         for turn in self.context:
             tokenized += f"{turn.speaker}: {turn.utterance} {self.sep_token} "
         tokenized = f'{self.task_prefix} {tokenized}'
-        tokenized = tokenized.strip().replace("  ", " ")
+        tokenized = tokenized.strip().replace("  ", " ") + " intent: "
         return tokenized
 
     @property
     def model_output(self):
-        return f"{self.intent_label} {self.sep_token}"
+        return f"{self.intent_label} {self.sep_token}".strip()
 
 
 @dataclass(frozen=True)
