@@ -26,11 +26,11 @@ class Sample:
 
     @property
     def model_input(self):
-        tokenized = "classify intent: "
+        tokenized = "classify: "
         for turn in self.context:
             tokenized += f"{turn.speaker}: {turn.utterance} {self.sep_token} "
         tokenized = f'{self.task_prefix} {tokenized}'
-        tokenized = tokenized.strip().replace("  ", " ") + " intent: "
+        tokenized = tokenized.strip().replace("  ", " ") + " label: "
         return tokenized
 
     @property
