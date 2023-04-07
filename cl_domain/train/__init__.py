@@ -9,7 +9,7 @@ from transformers import T5Tokenizer, \
 from cl_domain.evaluation import create_compute_metrics
 from cl_domain.train.dataloader import get_dataloader
 
-MODEL_NAME = "t5-small"
+MODEL_NAME = "google/flan-t5-base"
 MODEL = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
 TOKENIZER = T5Tokenizer.from_pretrained(MODEL_NAME)
 
@@ -19,7 +19,7 @@ def get_training_args(args: Dict[Text, Any]):
         output_dir='./results',
         num_train_epochs=20,
         per_device_train_batch_size=16,
-        per_device_eval_batch_size=16,
+        per_device_eval_batch_size=32,
         warmup_steps=0,
         weight_decay=0.01,
         logging_dir='./logs',
