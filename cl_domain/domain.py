@@ -36,7 +36,7 @@ class Sample:
     @property
     def model_output(self):
         # Convert title case (e.g., "MakeBooking") to snake case (e.g., "make_booking").
-        return self.intent_label.lower()
+        return self.intent_label
 
 
 @dataclass(frozen=True)
