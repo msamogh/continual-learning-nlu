@@ -17,7 +17,7 @@ TOKENIZER = T5Tokenizer.from_pretrained(MODEL_NAME)
 def get_training_args(args: Dict[Text, Any]):
     return TrainingArguments(
         output_dir='./results',
-        num_train_epochs=40,
+        num_train_epochs=5,
         per_device_train_batch_size=8,
         per_device_eval_batch_size=32,
         warmup_steps=0,
