@@ -16,9 +16,9 @@ def create_compute_metrics(tokenizer):
         preds = np.argmax(logits[0], axis=-1)
 
         # Convert token ids back to text labels
-        preds_texts = [tokenizer.decode(pred, skip_special_tokens=True) for pred
+        preds_texts = [tokenizer.decode(pred, skip_special_tokens=False) for pred
                        in preds]
-        labels_texts = [tokenizer.decode(label, skip_special_tokens=False) for
+        labels_texts = [tokenizer.decode(label, skip_special_tokens=True) for
                         label in labels]
 
         print(list(zip(preds_texts, labels_texts)))
