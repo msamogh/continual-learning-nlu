@@ -54,7 +54,7 @@ def max_path_ordering(domains: Dict[Text, str]) -> List[int]:
 
 
 def min_path_ordering(domains: Dict[Text, str]) -> List[int]:
-    df = pd.read_csv('distance_matrix.csv')
+    df = pd.read_csv('../distance_matrix.csv')
     domain_keys = df.columns.tolist()
     distance_matrix = df.iloc[:, 1:].values
     min_distance, min_path = tsp_bruteforce(distance_matrix)
