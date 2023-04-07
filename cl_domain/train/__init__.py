@@ -18,15 +18,16 @@ def get_training_args(args: Dict[Text, Any]):
     return TrainingArguments(
         output_dir='./results',
         num_train_epochs=20,
-        per_device_train_batch_size=32,
-        per_device_eval_batch_size=32,
-        warmup_steps=500,
+        per_device_train_batch_size=16,
+        per_device_eval_batch_size=16,
+        warmup_steps=0,
         weight_decay=0.01,
         logging_dir='./logs',
         logging_steps=10,
         evaluation_strategy='steps',
         eval_steps=50,
         save_total_limit=1,
+        learning_rate=1e-4,
     )
 
 
