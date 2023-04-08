@@ -1,2 +1,0 @@
-sgd_banks
-sgd_trains
