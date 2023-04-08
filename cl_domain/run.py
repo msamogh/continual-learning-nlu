@@ -8,7 +8,7 @@ import randomname
 
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
-from cl_domain.train import continually_train, get_training_args, evaluate
+from cl_domain.train import continually_train, get_training_args, evaluate, calculate_average_accuracy
 from domain_ordering import ORDERINGS
 
 
