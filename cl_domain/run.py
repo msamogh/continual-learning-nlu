@@ -8,7 +8,7 @@ import randomname
 
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
-from cl_domain.train import continually_train, get_training_args, evaluate
+from cl_domain.train import continually_train, get_training_args, evaluate, calculate_average_accuracy
 from domain_ordering import ORDERINGS
 
 
@@ -86,8 +86,10 @@ if __name__ == "__main__":
             print(
                 f"Evaluating {args['cl_super_run_label']}/{cl_run_label.stem}...")
             cl_run_input = pickle.load(open(cl_run_label, "rb"))
-            result = evaluate(args, eval_args, cl_run_input)
-            print(result.step_wise_domain_wise_results)
+            # result = evaluate(args, eval_args, cl_run_input)
+            # print(result.step_wise_domain_wise_results)
+
+            calculate_average_accuracy(args, eval_args, cl_run_input)
 
         print("Evaluation finished.")
     else:
