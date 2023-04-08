@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,visualstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,visualstudio
-
+.DS_Store
 data/
 
 ### Python ###
