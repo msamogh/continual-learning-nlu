@@ -89,6 +89,8 @@ if __name__ == "__main__":
             result = evaluate(args, eval_args, cl_run_input)
             print(result.step_wise_domain_wise_results)
 
+            calculate_average_accuracy(args, eval_args, cl_run_input)
+
         print("Evaluation finished.")
     else:
         raise ValueError(f"Unknown mode {args['mode']}.")
