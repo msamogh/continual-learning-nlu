@@ -6,6 +6,7 @@ def get_args():
 
     args.add_argument("--mode", type=str, help="Mode to run in")
     args.add_argument("--cl_super_run_label", required=False, type=str, help="Superlabel of the CL run to use")
+    args.add_argument("--num_train_epochs", type=int, default=9, help="Number of epochs to train for")
 
     add_experiment_args(args)
     add_dataloader_args(args)
