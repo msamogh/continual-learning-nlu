@@ -87,7 +87,7 @@ def evaluate(args):
     # continually evaluate them one by one.
     print(f"PHASE 2: Evaluating.")
     for cl_run_label in Path(
-            f"../cl_runs/{args['cl_super_run_label']}").glob("*.pkl"):
+            f"{args['cl_run_dir']}/{args['cl_super_run_label']}").glob("*.pkl"):
         print(
             f"Evaluating {args['cl_super_run_label']}/{cl_run_label.stem}...")
 
