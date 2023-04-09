@@ -64,7 +64,7 @@ def generate_data(args) -> Text:
                                cl_run_input.domain_ordering]))
 
     print(f"Finished generating: {super_run_label}")
-    return super_run_label
+    return f"{args['ordering_strategy']}-{super_run_label}"
 
 
 def train(args):
