@@ -97,9 +97,6 @@ def evaluate(args):
             cl_run_label=cl_run_label.stem,
             result_matrix=result_matrix
         )
-        print(type(cl_run_result.avg_forgetting))
-        print(cl_run_result.avg_forgetting[0])
-        print(cl_run_result.avg_forgetting)
         print(f"Average forgetting: {cl_run_result.avg_forgetting}")
         print(f"Average accuracy: {cl_run_result.avg_accuracy}")
 
