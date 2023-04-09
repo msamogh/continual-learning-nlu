@@ -99,6 +99,15 @@ def evaluate(args):
         print(f"Average forgetting: {cl_run_result.avg_forgetting}")
         print(f"Average accuracy: {cl_run_result.avg_accuracy}")
 
+        # Save the result.
+        base_results_dir = Path(f"../cl_results/{args['cl_super_run_label']}")
+        if not base_results_dir.exists():
+            base_results_dir.mkdir(parents=True)
+        pickle.dump(
+            cl_run_result,
+            (base_results_dir / f"{cl_run_label.stem}.pkl").open("wb")
+        )
+
     print("Evaluation finished.")
 
 
