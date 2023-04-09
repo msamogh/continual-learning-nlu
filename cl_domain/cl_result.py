@@ -10,7 +10,7 @@ from cl_run import CLRunInput
 @dataclass(frozen=True)
 class CLRunResult:
     cl_run_label: Text
-    result_matrix: np.ndarray
+    result_matrix: np.array
 
     @property
     @lru_cache()
