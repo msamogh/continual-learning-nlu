@@ -94,7 +94,7 @@ def evaluate(args):
         result_matrix = evaluate_all_models_over_all_domains(args, cl_run_input)
         print(result_matrix)
         cl_run_result = CLRunResult(
-            cl_run_label=cl_run_label.stem,
+            cl_run_input=cl_run_input,
             result_matrix=result_matrix
         )
         print(f"Average forgetting: {cl_run_result.avg_forgetting}")

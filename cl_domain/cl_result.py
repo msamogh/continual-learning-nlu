@@ -9,7 +9,7 @@ from cl_run import CLRunInput
 
 @dataclass(frozen=True)
 class CLRunResult:
-    cl_run_label: Text
+    cl_run_input: CLRunInput
     result_matrix: np.array
 
     @property
@@ -18,9 +18,9 @@ class CLRunResult:
 
     @property
     def avg_forgetting(self) -> float:
-        return 0 #np.mean(
-        #    self.result_matrix[-1, :-1] - np.max(self.result_matrix[:, :-1], axis=0)
-        #)
+        return np.mean(
+            self.result_matrix[-1, :-1] - np.max(self.result_matrix[:, :-1], axis=0)
+        )
 
 
 @dataclass(frozen=True)
