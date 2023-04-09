@@ -22,9 +22,3 @@ class CLRunInput:
         }
         for domain in self.domain_ordering:
             yield domain, domain_wise_dataloaders[domain.domain_name]
-
-
-@dataclass(frozen=True)
-class CLRunResult:
-    cl_run_input: CLRunInput
-    step_wise_domain_wise_results: List[Dict[Text, Any]]

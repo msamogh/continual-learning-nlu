@@ -5,7 +5,30 @@ import numpy as np
 from cl_domain.domain import *
 
 
-from transformers import EvalPrediction
+from transformers import EvalPrediction, T5ForConditionalGeneration, Trainer
+
+
+def evaluate_all_models_over_all_domains(args: Dict[Text, Any], cl_run_input: "CLRunInput") -> np.ndarray:
+    result_matrix = np.zeros(
+        (len(cl_run_input.domain_ordering), len(cl_run_input.domain_ordering))
+    )
+    for i in range(len(cl_run_input.domain_ordering)):
+        model_i = T5ForConditionalGeneration.from_pretrained(
+            f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{i}"
+        )
+        for j, (domain, domain_wise_dataloader) in enumerate(
+                cl_run_input.get_ordered_dataloaders(args)
+        ):
+            print(f"Evaluating domain {j} with model {i}")
+            dl_j = domain_wise_dataloader["test"]
+            from train import TOKENIZER
+            result_matrix[i, j] = Trainer(
+                model=model_i,
+                eval_dataset=dl_j,
+                compute_metrics=create_compute_metrics(TOKENIZER)
+            ).evaluate()["eval_accuracy"]
+    return result_matrix
+
 
 
 def create_compute_metrics(tokenizer):
