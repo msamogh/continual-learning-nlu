@@ -26,6 +26,7 @@ def get_training_args(args: Dict[Text, Any]):
         logging_steps=10,
         evaluation_strategy='steps',
         eval_steps=50,
+        report_to="none",
         save_total_limit=1,
         learning_rate=1e-4,
     )
