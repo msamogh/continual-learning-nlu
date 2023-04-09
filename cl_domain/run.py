@@ -49,7 +49,7 @@ def generate_data(args):
     # Generate both a pickle and a text file with the ordering.
     super_run_label = randomname.get_name()
     base_run_dir = Path(
-        f"../cl_runs/{args['ordering_strategy']}-{super_run_label}")
+        f"{args['cl_run_dir']}/{args['ordering_strategy']}-{super_run_label}")
     if not Path(base_run_dir).exists():
         Path(base_run_dir).mkdir(parents=True)
     # Generate cl_run_inputs for num_runs runs.
@@ -72,7 +72,7 @@ def train(args):
 
     # Read all cl_run_inputs from one particular ordering and
     # continually train them one by one.
-    for cl_run_label in Path(f"../cl_runs/{args['cl_super_run_label']}").glob(
+    for cl_run_label in Path(f"{args['cl_run_dir']}/{args['cl_super_run_label']}").glob(
             "*.pkl"):
         print(f"Training {args['cl_super_run_label']}/{cl_run_label.stem}...")
         cl_run_input = pickle.load(open(cl_run_label, "rb"))
@@ -101,7 +101,7 @@ def evaluate(args):
         print(f"Average accuracy: {cl_run_result.avg_accuracy}")
 
         # Save the result.
-        base_results_dir = Path(f"../cl_results/{args['cl_super_run_label']}")
+        base_results_dir = Path(f"{args['results_dir']}/{args['cl_super_run_label']}")
         if not base_results_dir.exists():
             base_results_dir.mkdir(parents=True)
         pickle.dump(

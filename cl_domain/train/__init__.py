@@ -60,4 +60,6 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
         trainer.train()
 
         # Save checkpoint
-        model.save_pretrained(f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx}")
+        model.save_pretrained(
+            f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx}"
+        )

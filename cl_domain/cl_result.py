@@ -18,7 +18,7 @@ class CLRunResult:
 
     @property
     def avg_forgetting(self) -> float:
-        return np.mean(
+        return -np.mean(
             self.result_matrix[-1, :-1] - np.max(self.result_matrix[:, :-1], axis=0)
         )
 

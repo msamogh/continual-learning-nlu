@@ -7,6 +7,9 @@ def get_args():
     args.add_argument("--mode", type=str, help="Mode to run in")
     args.add_argument("--cl_super_run_label", required=False, type=str, help="Superlabel of the CL run to use")
     args.add_argument("--num_train_epochs", type=int, default=9, help="Number of epochs to train for")
+    args.add_argument("--cl_run_dir", type=str, default="../cl_runs", help="Directory to store CL runs in")
+    args.add_argument("--cl_checkpoint_dir", type=str, default="../cl_checkpoints", help="Directory to store CL checkpoints in")
+    args.add_argument("--results_dir", type=str, default="../cl_results", help="Directory to store results in")
 
     add_experiment_args(args)
     add_dataloader_args(args)
