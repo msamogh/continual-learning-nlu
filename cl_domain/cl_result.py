@@ -13,12 +13,10 @@ class CLRunResult:
     result_matrix: np.array
 
     @property
-    @lru_cache()
     def avg_accuracy(self) -> float:
         return np.mean(self.result_matrix[-1, :])
 
     @property
-    @lru_cache()
     def avg_forgetting(self) -> float:
         return 0 #np.mean(
         #    self.result_matrix[-1, :-1] - np.max(self.result_matrix[:, :-1], axis=0)

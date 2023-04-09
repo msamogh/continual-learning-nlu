@@ -92,6 +92,7 @@ def evaluate(args):
 
         cl_run_input = pickle.load(open(cl_run_label, "rb"))
         result_matrix = evaluate_all_models_over_all_domains(args, cl_run_input)
+        print(result_matrix)
         cl_run_result = CLRunResult(
             cl_run_label=cl_run_label.stem,
             result_matrix=result_matrix
