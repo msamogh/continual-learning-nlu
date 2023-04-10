@@ -106,7 +106,10 @@ def add_dataloader_args(args):
         help="Percentage of samples to use for testing",
     )
     args.add_argument(
-        "--train_batch_size", type=int, default=32, help="Batch size for training"
+        "--train_batch_size", type=int, default=64, help="Batch size for training"
+    )
+    args.add_argument(
+        "--eval_batch_size", type=int, default=64, help="Batch size for evaluation"
     )
     args.add_argument(
         "--shuffle_within_domain",
