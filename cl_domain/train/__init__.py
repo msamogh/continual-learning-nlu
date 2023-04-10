@@ -68,15 +68,16 @@ def continually_train(
 
         if domain_idx > 0:
             print(f"Concatenating experience replay data from doman name: {cl_run_input.domain_ordering[domain_idx - 1].domain_name}.")
-            prev_train_dl = get_dataloader(
-                args,
-                cl_run_input,
-                cl_run_input.domain_ordering[domain_idx - 1].domain_name,
-                "train",
-                TOKENIZER,
-                subsample_size=args["cl_experience_replay_size"],
-            )
-            train_dl = concatenate_datasets([train_dl, prev_train_dl])
+            for replay_domain_idx in range(domain_idx):
+                prev_train_dl = get_dataloader(
+                    args,
+                    cl_run_input,
+                    cl_run_input.domain_ordering[replay_domain_idx].domain_name,
+                    "train",
+                    TOKENIZER,
+                    subsample_size=args["cl_experience_replay_size"],
+                )
+                train_dl = concatenate_datasets([train_dl, prev_train_dl])
 
         # If domain_idx == 0, then we are training on the first domain.
         # Else load the checkpoint from the previous domain.
