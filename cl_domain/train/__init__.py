@@ -45,10 +45,6 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
     )
 
 
-def sample_experience_replay(buffer, batch_size):
-    return random.sample(buffer, batch_size)
-
-
 def continually_train(
     args: Dict[Text, Any],
     training_args: TrainingArguments,
@@ -67,8 +63,10 @@ def continually_train(
         )
 
         if domain_idx > 0:
-            print(f"Concatenating experience replay data from doman name: {cl_run_input.domain_ordering[domain_idx - 1].domain_name}.")
             for replay_domain_idx in range(domain_idx):
+                print(
+                    f"Concatenating experience replay data from doman name: {cl_run_input.domain_ordering[replay_domain_idx].domain_name}."
+                )
                 prev_train_dl = get_dataloader(
                     args,
                     cl_run_input,

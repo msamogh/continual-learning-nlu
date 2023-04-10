@@ -21,6 +21,9 @@ def evaluate_all_models_over_all_domains(
         for j, (domain, domain_wise_dataloader) in enumerate(
             cl_run_input.get_ordered_dataloaders(args)
         ):
+            # Skip evaluating on domains that have not been seen yet.
+            if j > i:
+                break
             print(f"Evaluating domain {j} with model {i}")
             dl_j = domain_wise_dataloader["test"]
             from train import TOKENIZER
