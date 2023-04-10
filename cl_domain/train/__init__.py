@@ -1,4 +1,6 @@
+import random
 from typing import *
+from collections import deque
 
 import numpy as np
 import torch
@@ -14,7 +16,14 @@ MODEL = T5ForConditionalGeneration.from_pretrained(MODEL_NAME)
 TOKENIZER = T5Tokenizer.from_pretrained(MODEL_NAME)
 
 
-def get_training_args(args: Dict[Text, Any]):
+def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArguments:
+    # Set learning rate inversely proportional to the number of steps.
+    if args["cl_lr_schedule"] == "linear":
+        learning_rate = 1e-4 / (cl_step_idx + 1)
+    elif args["cl_lr_schedule"] == "constant":
+        learning_rate = 1e-4
+    else:
+        raise ValueError(f"Invalid learning rate schedule {args['cl_lr_schedule']}.")
     return TrainingArguments(
         output_dir='./results',
         num_train_epochs=args["num_train_epochs"],
@@ -28,8 +37,13 @@ def get_training_args(args: Dict[Text, Any]):
         eval_steps=50,
         report_to="none",
         save_total_limit=1,
-        learning_rate=1e-4,
+        learning_rate=learning_rate,
     )
+
+
+
+def sample_experience_replay(buffer, batch_size):
+    return random.sample(buffer, batch_size)
 
 
 def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, cl_run_input: "CLRunInput") -> None:
@@ -44,6 +58,9 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
             domain_wise_dataloader["val"],
             domain_wise_dataloader["test"]
         )
+
+        # Initialize experience replay buffer
+        experience_replay_buffer = deque(maxlen=args["experience_replay_buffer_size"])
 
         # If domain_idx == 0, then we are training on the first domain.
         # Else load the checkpoint from the previous domain.

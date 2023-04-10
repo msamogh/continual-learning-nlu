@@ -6,6 +6,7 @@ def get_args():
 
     args.add_argument("--mode", type=str, help="Mode to run in")
     args.add_argument("--cl_super_run_label", required=False, type=str, help="Superlabel of the CL run to use")
+    args.add_argument("--cl_lr_schedule", type=str, default="constant", help="Learning rate schedule to use")
     args.add_argument("--num_train_epochs", type=int, default=9, help="Number of epochs to train for")
     args.add_argument("--cl_run_dir", type=str, default="../cl_runs", help="Directory to store CL runs in")
     args.add_argument("--cl_checkpoint_dir", type=str, default="../cl_checkpoints", help="Directory to store CL checkpoints in")
@@ -22,6 +23,7 @@ def get_args():
 def add_cl_run_args(args):
     args.add_argument("--num_domains_per_run", type=int, default=5, help="Number of domains to use in a CL run")
     args.add_argument("--num_runs", type=int, default=5, help="Number of CL runs to perform")
+
 
 def add_experiment_args(args):
     args.add_argument("--ordering_strategy", type=str, default="random", help="Domain ordering to use")

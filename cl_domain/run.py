@@ -68,15 +68,20 @@ def generate_data(args) -> Text:
 
 
 def train(args):
-    # Initialize HuggingFace Trainer
-    training_args = get_training_args(args)
-
-    # Read all cl_run_inputs from one particular ordering and
-    # continually train them one by one.
-    for cl_run_label in Path(f"{args['cl_run_dir']}/{args['cl_super_run_label']}").glob(
-            "*.pkl"):
+    cl_run_inputs = []
+    for cl_step_idx, cl_run_label in enumerate(
+            Path(f"{args['cl_run_dir']}/{args['cl_super_run_label']}").glob(
+            "*.pkl")
+    ):
         print(f"Training {args['cl_super_run_label']}/{cl_run_label.stem}...")
+
+        # Read the cl_run_input.
         cl_run_input = pickle.load(open(cl_run_label, "rb"))
+        cl_run_inputs.append(cl_run_input)
+
+        # Get training args for this particular run.
+        training_args = get_training_args(args, cl_step_idx)
+        # Train the models.
         continually_train(args, training_args, cl_run_input)
 
     print("Training finished.")
