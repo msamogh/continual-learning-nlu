@@ -19,7 +19,7 @@ TOKENIZER = T5Tokenizer.from_pretrained(MODEL_NAME)
 def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArguments:
     # Set learning rate inversely proportional to the number of steps.
     if args["cl_lr_schedule"] == "linear":
-        learning_rate = 1e-4 / (cl_step_idx + 1)
+        learning_rate = 1e-4 / (2 * cl_step_idx + 1)
     elif args["cl_lr_schedule"] == "constant":
         learning_rate = 1e-4
     else:
