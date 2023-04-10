@@ -35,8 +35,11 @@ class Sample:
 
     @property
     def model_output(self):
+        # return self.intent_label.replace(" ", "_").lower()
         # Convert title case (e.g., "MakeBooking") to snake case (e.g., "make_booking").
-        return self.intent_label
+        return ''.join(
+            ['_' + char.lower() if char.isupper() and i > 0 else char.lower()
+             for i, char in enumerate(self.intent_label)])
 
 
 @dataclass(frozen=True)
