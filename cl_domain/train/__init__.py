@@ -4,7 +4,7 @@ from collections import deque
 
 import numpy as np
 import torch
-from datasets import Dataset
+from datasets import Dataset, concatenate_datasets
 from transformers import (
     T5Tokenizer,
     T5ForConditionalGeneration,
@@ -76,7 +76,7 @@ def continually_train(
                 TOKENIZER,
                 subsample_size=args["cl_experience_replay_size"],
             )
-            train_dl = train_dl.concatenate(prev_train_dl)
+            train_dl = concatenate_datasets([train_dl, prev_train_dl])
 
         # If domain_idx == 0, then we are training on the first domain.
         # Else load the checkpoint from the previous domain.
