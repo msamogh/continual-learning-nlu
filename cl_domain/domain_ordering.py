@@ -4,8 +4,7 @@ import pandas as pd
 
 from cl_domain.domain import Domain
 from cl_domain.utils import GLOBAL_RAND
-from cl_domain.domain_similarity import EmbeddingFn, Clusterer, \
-    DomainSimilarityMetric
+from cl_domain.domain_similarity import EmbeddingFn, Clusterer, DomainSimilarityMetric
 from itertools import permutations
 
 
@@ -21,7 +20,7 @@ def tsp_bruteforce(distance_matrix, start_node=0):
     nodes = list(range(n))
     nodes.remove(start_node)
 
-    min_distance = float('inf')
+    min_distance = float("inf")
     min_path = None
 
     for perm in permutations(nodes):
@@ -46,7 +45,7 @@ def max_path_ordering(domains: Dict[Text, str]) -> List[str]:
     """Generate a domain ordering that maximizes the number of paths between
     domains.
     """
-    df = pd.read_csv('./distance_matrix.csv', index_col=0)
+    df = pd.read_csv("./distance_matrix.csv", index_col=0)
     row_col_to_drop = set(df.columns) - set(domains.keys())
     df = df.drop(row_col_to_drop, axis=1).drop(row_col_to_drop, axis=0)
     domain_keys = df.columns.tolist()
@@ -56,7 +55,7 @@ def max_path_ordering(domains: Dict[Text, str]) -> List[str]:
 
 
 def min_path_ordering(domains: Dict[Text, str]) -> List[str]:
-    df = pd.read_csv('./distance_matrix.csv', index_col=0)
+    df = pd.read_csv("./distance_matrix.csv", index_col=0)
     row_col_to_drop = set(df.columns) - set(domains.keys())
     df = df.drop(row_col_to_drop, axis=1).drop(row_col_to_drop, axis=0)
     domain_keys = df.columns.tolist()

@@ -7,7 +7,6 @@ from typing import *
 from sklearn.model_selection import train_test_split
 
 
-
 @dataclass
 class Turn:
     speaker: Text
@@ -17,6 +16,7 @@ class Turn:
 @dataclass(frozen=True)
 class Sample:
     """A single utterance represented as a (text, intent) pair."""
+
     context: List[Turn]
     intent_label: Text
     domain: Text
@@ -29,7 +29,7 @@ class Sample:
         tokenized = "classify intent: "
         for turn in self.context:
             tokenized += f"{turn.speaker}: {turn.utterance} {self.sep_token} "
-        tokenized = f'{self.task_prefix} {tokenized}'
+        tokenized = f"{self.task_prefix} {tokenized}"
         tokenized = tokenized.strip().replace("  ", " ") + " intent: "
         return tokenized
 
@@ -37,9 +37,12 @@ class Sample:
     def model_output(self):
         # return self.intent_label.replace(" ", "_").lower()
         # Convert title case (e.g., "MakeBooking") to snake case (e.g., "make_booking").
-        return ''.join(
-            ['_' + char.lower() if char.isupper() and i > 0 else char.lower()
-             for i, char in enumerate(self.intent_label)])
+        return "".join(
+            [
+                "_" + char.lower() if char.isupper() and i > 0 else char.lower()
+                for i, char in enumerate(self.intent_label)
+            ]
+        )
 
 
 @dataclass(frozen=True)
@@ -49,10 +52,10 @@ class Domain:
     For example, the data "weather" might contain utterances such as "What's
     the weather like today?" and "What's the weather like in New York?".
     """
+
     dataset_name: Text
     domain_name: Text
-    splits: Dict[Text, List[Sample]] = field(
-        default_factory=lambda: defaultdict(list))
+    splits: Dict[Text, List[Sample]] = field(default_factory=lambda: defaultdict(list))
 
     @staticmethod
     def generate_samples(ctx_window_size: Optional[int] = None) -> Dict[Text, "Domain"]:
@@ -62,8 +65,7 @@ class Domain:
             # Every split in a dataset
             for split in ("train", "valid", "test"):
                 # Every file in a split
-                with (Path("../data") / dataset / f"{split}.json").open(
-                        "r") as f:
+                with (Path("../data") / dataset / f"{split}.json").open("r") as f:
                     dialogues = json.load(f)
                     # Ever dialogue in a file
                     for dialogue in dialogues:
@@ -73,42 +75,43 @@ class Domain:
                             continue
                         domain = domains[0]
                         if domain not in domain_wise_samples:
-                            domain_wise_samples[domain] = Domain(dataset,
-                                                                 domain)
+                            domain_wise_samples[domain] = Domain(dataset, domain)
 
                         # Every turn in a dialogue
                         for idx, turn in enumerate(dialogue["dialogue"]):
                             if turn["spk"] == "API":
                                 # If immediately preceded by a user turn
                                 if (
-                                        idx > 0 and
-                                        dialogue["dialogue"][idx - 1][
-                                            "spk"] == "USER" and
-                                        "(" in turn["utt"]
+                                    idx > 0
+                                    and dialogue["dialogue"][idx - 1]["spk"] == "USER"
+                                    and "(" in turn["utt"]
                                 ):
                                     # Consider all utterances within a fixed window as the context.
                                     if ctx_window_size is None:
                                         context = [
-                                            Turn(speaker=turn["spk"],
-                                                 utterance=turn["utt"])
-                                            for turn in
-                                            dialogue["dialogue"][:idx]
+                                            Turn(
+                                                speaker=turn["spk"],
+                                                utterance=turn["utt"],
+                                            )
+                                            for turn in dialogue["dialogue"][:idx]
                                         ]
                                     else:
                                         context = [
-                                            Turn(speaker=turn["spk"],
-                                                 utterance=turn["utt"])
+                                            Turn(
+                                                speaker=turn["spk"],
+                                                utterance=turn["utt"],
+                                            )
                                             for turn in dialogue["dialogue"][
-                                                        idx - ctx_window_size + 1:idx]
+                                                idx - ctx_window_size + 1 : idx
+                                            ]
                                         ]
-                                    domain_wise_samples[domain].splits[
-                                        split].append(
+                                    domain_wise_samples[domain].splits[split].append(
                                         Sample(
                                             context=context,
                                             intent_label=turn["utt"][
-                                                         :turn["utt"].index(
-                                                             "(")],
-                                            domain=domain
+                                                : turn["utt"].index("(")
+                                            ],
+                                            domain=domain,
                                         )
                                     )
         return domain_wise_samples
@@ -121,13 +124,16 @@ class DomainSplit:
     DomainSubset objects are used to represent a subset of a data. This is
     useful for evaluating the performance of a train on a subset of a data.
     """
+
     domain: Domain
     train_samples: List[Sample]
     val_samples: List[Sample]
     test_samples: List[Sample]
 
     @classmethod
-    def get_fixed_n_split(cls, domain: Domain, limit_n_samples: int, test_size: float, val_size: float) -> "DomainSplit":
+    def get_fixed_n_split(
+        cls, domain: Domain, limit_n_samples: int, test_size: float, val_size: float
+    ) -> "DomainSplit":
         """First, combine the train, val, and test splits. Then, split the
         combined splits into train and test splits. Finally, split the train
         split into train and val splits."""
@@ -139,8 +145,10 @@ class DomainSplit:
             combined_utterances = combined_utterances[:limit_n_samples]
 
         train_utterances, test_utterances = train_test_split(
-            combined_utterances, test_size=test_size, random_state=42)
-        train_utterances, val_utterances = train_test_split(train_utterances, test_size=val_size / (1 - test_size), random_state=42)
+            combined_utterances, test_size=test_size, random_state=42
+        )
+        train_utterances, val_utterances = train_test_split(
+            train_utterances, test_size=val_size / (1 - test_size), random_state=42
+        )
 
         return cls(domain, train_utterances, val_utterances, test_utterances)
-
