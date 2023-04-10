@@ -60,7 +60,7 @@ def continually_train(args: Dict[Text, Any], training_args: TrainingArguments, c
         )
 
         # Initialize experience replay buffer
-        experience_replay_buffer = deque(maxlen=args["experience_replay_buffer_size"])
+        # experience_replay_buffer = deque(maxlen=args["experience_replay_buffer_size"])
 
         # If domain_idx == 0, then we are training on the first domain.
         # Else load the checkpoint from the previous domain.
