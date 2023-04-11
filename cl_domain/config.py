@@ -90,13 +90,13 @@ def add_dataloader_args(args):
     args.add_argument(
         "--limit_n_samples",
         type=int,
-        default=100,
+        default=200,
         help="Limit the number of total samples per domain",
     )
     args.add_argument(
         "--val_size_per_domain",
         type=float,
-        default=0.15,
+        default=0.01,
         help="Percentage of samples to use for validation",
     )
     args.add_argument(
