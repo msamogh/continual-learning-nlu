@@ -26,7 +26,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--report_dir", type=str, required=True)
     parser.add_argument("--results_dir", type=str, required=True)
-    parser.add_argument("--super_run_labels", type=list, required=True)
+    parser.add_argument("--super_run_labels", nargs="+", required=True)
     args = vars(parser.parse_args())
 
     all_results = []
