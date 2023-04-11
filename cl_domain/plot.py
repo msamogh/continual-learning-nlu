@@ -6,13 +6,11 @@ from pathlib import Path
 import randomname
 import pandas as pd
 
-from cl_result import CLRunResult
-
 
 def read_results(args: Dict[Text, Any], super_run_label: Text) -> List[Dict[Text, Any]]:
     results = []
     for run_result_file in Path(args["results_dir"] / super_run_label).iterdir():
-        cl_run_result: CLRunResult = pickle.load(run_result_file.open("rb"))
+        cl_run_result = pickle.load(run_result_file.open("rb"))
         results.append({
             "ordering_strategy": super_run_label.split("-")[0],
             "num_classes": len(cl_run_result.cl_run_input.domain_ordering),
