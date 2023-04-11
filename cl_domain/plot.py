@@ -3,6 +3,7 @@ import argparse
 from typing import *
 from pathlib import Path
 
+import matplotlib.pyplot as plt
 import randomname
 import pandas as pd
 
@@ -36,4 +37,22 @@ if __name__ == "__main__":
         Path(args["report_dir"]).mkdir(parents=True)
     report_label = randomname.get_name()
     df.to_csv((Path(args["report_dir"])) / f"{report_label}.csv", index=False)
+
+    # Plot the distribution of avg_accuracy
+    plt.hist(df['avg_accuracy'], bins=10, alpha=0.5, color='blue',
+             label='Average Accuracy')
+    plt.xlabel('Average Accuracy')
+    plt.ylabel('Frequency')
+    plt.title('Distribution of Average Accuracy')
+    plt.legend()
+    plt.savefig((Path(args["report_dir"])) / f"{report_label}-avg-accuracy.png")
+
+    # Plot the distribution of avg_forgetting
+    plt.hist(df['avg_forgetting'], bins=10, alpha=0.5, color='red',
+             label='Average Forgetting')
+    plt.xlabel('Average Forgetting')
+    plt.ylabel('Frequency')
+    plt.title('Distribution of Average Forgetting')
+    plt.legend()
+    plt.savefig((Path(args["report_dir"])) / f"{report_label}-avg-forgetting.png")
     print(f"Report written to {report_label}.csv")
