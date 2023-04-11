@@ -34,4 +34,4 @@ if __name__ == "__main__":
 
     if not Path(args["report_dir"]).exists():
         Path(args["report_dir"]).mkdir(parents=True)
-    df.to_csv(args["report_dir"] / f"{randomname.get_name()}.csv", index=False)
+    df.to_csv((Path(args["report_dir"])) / f"{randomname.get_name()}.csv", index=False)
