@@ -9,7 +9,7 @@ import pandas as pd
 
 def read_results(args: Dict[Text, Any], super_run_label: Text) -> List[Dict[Text, Any]]:
     results = []
-    for run_result_file in Path(args["results_dir"] / super_run_label).iterdir():
+    for run_result_file in (Path(args["results_dir"]) / super_run_label).iterdir():
         cl_run_result = pickle.load(run_result_file.open("rb"))
         results.append({
             "ordering_strategy": super_run_label.split("-")[0],
