@@ -46,6 +46,7 @@ if __name__ == "__main__":
     plt.title('Distribution of Average Accuracy')
     plt.legend()
     plt.savefig((Path(args["report_dir"])) / f"{report_label}-avg-accuracy.png")
+    plt.clf()
 
     # Plot the distribution of avg_forgetting
     plt.hist(df['avg_forgetting'], bins=10, alpha=0.5, color='red',
