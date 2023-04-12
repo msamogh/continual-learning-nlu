@@ -96,12 +96,12 @@ def continually_train(
                 train_dl,
                 batch_size=args["train_batch_size"],
                 pin_memory=True,
-            ).with_format("torch"),
+            ),
             eval_dataset=DataLoader(
                 val_dl,
                 batch_size=args["eval_batch_size"],
                 pin_memory=True,
-            ).with_format("torch"),
+            ),
         )
         trainer.train()
 
