@@ -92,8 +92,16 @@ def continually_train(
         trainer = Trainer(
             model=model,
             args=training_args,
-            train_dataset=DataLoader(train_dl, batch_size=args["train_batch_size"]).with_format("torch"),
-            eval_dataset=DataLoader(val_dl, batch_size=args["eval_batch_size"]).with_format("torch"),
+            train_dataset=DataLoader(
+                train_dl,
+                batch_size=args["train_batch_size"],
+                pin_memory=True,
+            ).with_format("torch"),
+            eval_dataset=DataLoader(
+                val_dl,
+                batch_size=args["eval_batch_size"],
+                pin_memory=True,
+            ).with_format("torch"),
         )
         trainer.train()
 
