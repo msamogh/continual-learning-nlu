@@ -137,3 +137,6 @@ if __name__ == "__main__":
         evaluate(args)
     else:
         raise ValueError(f"Unknown mode {args['mode']}.")
+
+    from gpu_utils import print_gpu_utilization
+    print_gpu_utilization()
