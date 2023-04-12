@@ -11,7 +11,6 @@ from transformers import (
     Trainer,
     TrainingArguments,
 )
-from torch.utils.data import DataLoader
 
 from cl_domain.evaluation import create_compute_metrics
 from cl_domain.train.dataloader import get_dataloader
@@ -92,16 +91,8 @@ def continually_train(
         trainer = Trainer(
             model=model,
             args=training_args,
-            train_dataset=DataLoader(
-                train_dl,
-                batch_size=args["train_batch_size"],
-                pin_memory=True,
-            ),
-            eval_dataset=DataLoader(
-                val_dl,
-                batch_size=args["eval_batch_size"],
-                pin_memory=True,
-            ),
+            train_dataset=train_dl,
+            eval_dataset=val_dl,
         )
         trainer.train()
 
