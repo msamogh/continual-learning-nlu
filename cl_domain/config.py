@@ -51,6 +51,9 @@ def get_args():
         default="../ds_config.json",
         help="Path to deepspeed config file",
     )
+    args.add_argument(
+        "--local_rank", type=int, default=-1, help="Local rank for distributed training"
+    )
 
     add_experiment_args(args)
     add_dataloader_args(args)
