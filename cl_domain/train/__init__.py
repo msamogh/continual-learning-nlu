@@ -43,7 +43,6 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         logging_dir="./logs",
         logging_steps=1,
         logging_strategy="epoch",
-        tf32=True,
         evaluation_strategy="steps",
         eval_steps=50,
         report_to="none",
