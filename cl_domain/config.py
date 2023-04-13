@@ -109,7 +109,7 @@ def add_dataloader_args(args):
     args.add_argument(
         "--val_size_per_domain",
         type=float,
-        default=0.01,
+        default=0.10,
         help="Percentage of samples to use for validation",
     )
     args.add_argument(

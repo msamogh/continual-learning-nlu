@@ -31,14 +31,14 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         raise ValueError(f"Invalid learning rate schedule {args['cl_lr_schedule']}.")
 
     deepspeed_config = json.load(open(args["deepspeed_config"], "r"))
-    print(deepspeed_config)
+    # print(deepspeed_config)
 
     return TrainingArguments(
         output_dir="./results",
         num_train_epochs=args["num_train_epochs"],
         per_device_train_batch_size=args["train_batch_size"],
         per_device_eval_batch_size=args["eval_batch_size"],
-        warmup_steps=0,
+        warmup_steps=10,
         weight_decay=0.01,
         logging_dir="./logs",
         gradient_accumulation_steps=2,
@@ -94,11 +94,15 @@ def continually_train(
                 f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx - 1}"
             )
 
+        # Train
+        print(f"Validation length: {len(val_dl)}")
         trainer = Trainer(
             model=model,
             args=training_args,
             train_dataset=train_dl,
             eval_dataset=val_dl,
+            early_stopping_patience=3,
+            early_stopping_threshold=0
         )
         trainer.train()
 
