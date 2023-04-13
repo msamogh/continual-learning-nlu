@@ -10,7 +10,7 @@ from transformers import (
     T5Tokenizer,
     T5ForConditionalGeneration,
     Trainer,
-    TrainingArguments,
+    TrainingArguments, EarlyStoppingCallback,
 )
 
 from cl_domain.evaluation import create_compute_metrics
@@ -101,8 +101,10 @@ def continually_train(
             args=training_args,
             train_dataset=train_dl,
             eval_dataset=val_dl,
-            early_stopping_patience=3,
-            early_stopping_threshold=0
+            callbacks=[EarlyStoppingCallback(
+                early_stopping_patience=3,
+                early_stopping_threshold=0
+            )]
         )
         trainer.train()
 
