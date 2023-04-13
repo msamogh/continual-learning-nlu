@@ -47,6 +47,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         evaluation_strategy="steps",
         eval_steps=50,
         fp16=True,
+        load_best_model_at_end=True,
         report_to="none",
         save_total_limit=1,
         learning_rate=learning_rate,
