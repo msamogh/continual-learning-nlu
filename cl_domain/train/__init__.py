@@ -45,6 +45,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         logging_steps=1,
         logging_strategy="epoch",
         evaluation_strategy="epoch",
+        save_strategy="epoch",
         eval_steps=3,
         fp16=True,
         load_best_model_at_end=True,
