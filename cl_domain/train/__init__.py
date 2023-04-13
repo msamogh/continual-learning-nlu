@@ -41,13 +41,13 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         warmup_steps=0,
         weight_decay=0.01,
         logging_dir="./logs",
+        gradient_accumulation_steps=2,
         logging_steps=1,
         logging_strategy="epoch",
         evaluation_strategy="steps",
         eval_steps=50,
         fp16=True,
         report_to="none",
-        deepspeed=deepspeed_config,
         save_total_limit=1,
         learning_rate=learning_rate,
     )
@@ -73,7 +73,7 @@ def continually_train(
         if domain_idx > 0:
             for replay_domain_idx in range(domain_idx):
                 print(
-                    f"Concatenating experience replay data from doman name: {cl_run_input.domain_ordering[replay_domain_idx].domain_name}."
+                    f"Concatenating experience replay data from domain name: {cl_run_input.domain_ordering[replay_domain_idx].domain_name}."
                 )
                 prev_train_dl = get_dataloader(
                     args,
