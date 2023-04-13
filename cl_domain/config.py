@@ -97,6 +97,12 @@ def add_tokenizer_args(args):
         default=3,
         help="Number of previous turns in the context",
     )
+    # Bool for fp16
+    args.add_argument(
+        "--fp16",
+        action="store_true",
+        help="Whether to use 16-bit (mixed) precision (through NVIDIA apex) instead of 32-bit",
+    )
 
 
 def add_dataloader_args(args):

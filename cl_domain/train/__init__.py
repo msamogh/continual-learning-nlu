@@ -39,7 +39,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         per_device_train_batch_size=args["train_batch_size"],
         per_device_eval_batch_size=args["eval_batch_size"],
         warmup_steps=0,
-        weight_decay=0.01,
+        weight_decay=0,
         logging_dir="./logs",
         gradient_accumulation_steps=1,
         logging_steps=1,
@@ -47,7 +47,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         evaluation_strategy="epoch",
         save_strategy="epoch",
         eval_steps=3,
-        fp16=True,
+        fp16=args["fp16"],
         load_best_model_at_end=True,
         report_to="none",
         save_total_limit=1,
@@ -104,8 +104,8 @@ def continually_train(
             train_dataset=train_dl,
             eval_dataset=val_dl,
             callbacks=[EarlyStoppingCallback(
-                early_stopping_patience=3,
-                early_stopping_threshold=0
+                early_stopping_patience=2,
+                early_stopping_threshold=0.001
             )]
         )
         trainer.train()
