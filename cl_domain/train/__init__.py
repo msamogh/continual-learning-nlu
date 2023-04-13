@@ -29,6 +29,10 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         learning_rate = 1e-4
     else:
         raise ValueError(f"Invalid learning rate schedule {args['cl_lr_schedule']}.")
+
+    deepspeed_config = json.load(open(args["deepspeed_config"], "r"))
+    print(deepspeed_config)
+
     return TrainingArguments(
         output_dir="./results",
         num_train_epochs=args["num_train_epochs"],
@@ -43,7 +47,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         evaluation_strategy="steps",
         eval_steps=50,
         report_to="none",
-        deepspeed=json.load(open(args["deepspeed_config"], "r")),
+        deepspeed=deepspeed_config,
         save_total_limit=1,
         learning_rate=learning_rate,
     )
