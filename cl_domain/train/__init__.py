@@ -45,6 +45,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         logging_strategy="epoch",
         evaluation_strategy="steps",
         eval_steps=50,
+        fp16=True,
         report_to="none",
         deepspeed=deepspeed_config,
         save_total_limit=1,
