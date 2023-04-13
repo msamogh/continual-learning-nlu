@@ -8,3 +8,4 @@ scikit-learn
 matplotlib
 accelerate
 nvidia-ml-py3
+deepspeed
