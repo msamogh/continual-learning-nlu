@@ -18,6 +18,9 @@ def get_args():
         help="Learning rate schedule to use",
     )
     args.add_argument(
+        "--lr", type=float, default=1e-4, help="Learning rate to use for training"
+    )
+    args.add_argument(
         "--num_train_epochs", type=int, default=9, help="Number of epochs to train for"
     )
     args.add_argument(
