@@ -45,6 +45,13 @@ def get_args():
         help="Number of samples to use for experience replay",
     )
 
+    args.add_argument(
+        "--deepspeed_config",
+        type=str,
+        default="../ds_config.json",
+        help="Path to deepspeed config file",
+    )
+
     add_experiment_args(args)
     add_dataloader_args(args)
     add_tokenizer_args(args)

@@ -42,6 +42,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         evaluation_strategy="steps",
         eval_steps=50,
         report_to="none",
+        deepspeed=args["deepspeed_config"],
         save_total_limit=1,
         learning_rate=learning_rate,
     )
