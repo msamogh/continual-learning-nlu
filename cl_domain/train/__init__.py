@@ -2,6 +2,7 @@ import json
 import random
 from typing import *
 from collections import deque
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -65,6 +66,15 @@ def continually_train(
     for domain_idx, (domain, domain_wise_dataloader) in enumerate(
         cl_run_input.get_ordered_dataloaders(args)
     ):
+        # If checkpoint exists, skip training.
+        if Path(
+            f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx - 1}"
+        ).exists():
+            print(
+                f"Checkpoint exists for domain {domain.domain_name}. Skipping training."
+            )
+            continue
+
         print(f"Training {domain.domain_name}.")
         train_dl, val_dl, test_dl = (
             domain_wise_dataloader["train"],
@@ -93,7 +103,7 @@ def continually_train(
             model = MODEL
         else:
             model = T5ForConditionalGeneration.from_pretrained(
-                f"../cl_checkpoints/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx - 1}"
+                f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx - 1}"
             )
 
         # Train
