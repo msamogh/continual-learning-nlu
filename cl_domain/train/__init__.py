@@ -39,7 +39,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         per_device_train_batch_size=args["train_batch_size"],
         per_device_eval_batch_size=args["eval_batch_size"],
         warmup_steps=0,
-        weight_decay=0,
+        weight_decay=0.01,
         logging_dir="./logs",
         gradient_accumulation_steps=1,
         logging_steps=1,
