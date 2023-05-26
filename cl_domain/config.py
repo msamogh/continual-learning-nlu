@@ -21,7 +21,7 @@ def get_args():
         "--lr", type=float, default=1e-4, help="Learning rate to use for training"
     )
     args.add_argument(
-        "--num_train_epochs", type=int, default=9, help="Number of epochs to train for"
+        "--num_train_epochs", type=int, default=5, help="Number of epochs to train for"
     )
     args.add_argument(
         "--cl_run_dir",
