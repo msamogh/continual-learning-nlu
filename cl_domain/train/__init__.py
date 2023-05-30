@@ -68,7 +68,7 @@ def continually_train(
     ):
         # If checkpoint exists, skip training.
         if Path(
-            f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx - 1}"
+            f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{domain_idx}"
         ).exists():
             print(
                 f"Checkpoint exists for domain {domain.domain_name}. Skipping training."
