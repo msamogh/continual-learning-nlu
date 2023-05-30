@@ -52,7 +52,10 @@ def generate_experiment_input(args: Dict[Text, Any], label: Text) -> "CLRunInput
 def generate_data(args) -> Text:
     # Generate domain ordering and domain-wise splits.
     # Generate both a pickle and a text file with the ordering.
-    super_run_label = randomname.get_name()
+    if args["resume_existing_super_run"]:
+        super_run_label = args["cl_super_run_label"]
+    else:
+        super_run_label = randomname.get_name()
     base_run_dir = Path(
         f"{args['cl_run_dir']}/{args['ordering_strategy']}-{super_run_label}"
     )
