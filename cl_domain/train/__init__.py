@@ -1,7 +1,5 @@
 import json
-import random
 from typing import *
-from collections import deque
 from pathlib import Path
 
 import numpy as np
@@ -42,7 +40,7 @@ def get_training_args(args: Dict[Text, Any], cl_step_idx: int) -> TrainingArgume
         warmup_steps=0,
         weight_decay=0.01,
         logging_dir="./logs",
-        gradient_accumulation_steps=1,
+        gradient_accumulation_steps=2,
         logging_steps=1,
         logging_strategy="epoch",
         evaluation_strategy="epoch",
