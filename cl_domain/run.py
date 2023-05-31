@@ -1,15 +1,15 @@
+import json
 import pickle
 import random
 from pathlib import Path
 from typing import *
 
-import pickle
 import randomname
 
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
 from cl_domain.train import continually_train, get_training_args
-from cl_domain.evaluation import evaluate_all_models_over_all_domains
+from cl_domain.evaluation import evaluate_all_models_over_all_domains, predict_all_models_over_all_domains
 from cl_result import CLRunResult
 from domain_ordering import ORDERINGS
 
@@ -95,7 +95,7 @@ def train(args):
     print("Training finished.")
 
 
-def evaluate(args):
+def evaluate(args, save_results=False):
     # Read all cl_run_inputs from one particular ordering and
     # continually evaluate them one by one.
     print(f"PHASE 2: Evaluating.")
@@ -105,7 +105,7 @@ def evaluate(args):
         print(f"Evaluating {args['cl_super_run_label']}/{cl_run_label.stem}...")
 
         cl_run_input = pickle.load(open(cl_run_label, "rb"))
-        result_matrix = evaluate_all_models_over_all_domains(args, cl_run_input)
+        result_matrix = evaluate_all_models_over_all_domains(args, cl_run_input, save_results=save_results)
         print(result_matrix)
         cl_run_result = CLRunResult(
             cl_run_input=cl_run_input, result_matrix=result_matrix
@@ -132,7 +132,9 @@ if __name__ == "__main__":
     elif args["mode"] == "train":
         train(args)
     elif args["mode"] == "evaluate":
-        evaluate(args)
+        evaluate(args, save_results=False)
+    elif args["mode"] == "predict":
+        evaluate(args, save_results=True)
     elif args["mode"] == "all":
         super_run_label = generate_data(args)
         args["cl_super_run_label"] = super_run_label

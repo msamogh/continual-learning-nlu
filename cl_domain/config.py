@@ -24,6 +24,12 @@ def get_args():
         "--num_train_epochs", type=int, default=5, help="Number of epochs to train for"
     )
     args.add_argument(
+        "--cl_predictions_dir",
+        type=str,
+        default="../cl_predictions",
+        help="Directory to store CL predictions in",
+    )
+    args.add_argument(
         "--cl_run_dir",
         type=str,
         default="../cl_runs",

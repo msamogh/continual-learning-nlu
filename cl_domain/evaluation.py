@@ -9,7 +9,7 @@ from transformers import EvalPrediction, T5ForConditionalGeneration, Trainer
 
 
 def evaluate_all_models_over_all_domains(
-    args: Dict[Text, Any], cl_run_input: "CLRunInput"
+    args: Dict[Text, Any], cl_run_input: "CLRunInput", save_results: bool = False
 ) -> np.ndarray:
     result_matrix = np.zeros(
         (len(cl_run_input.domain_ordering), len(cl_run_input.domain_ordering))
@@ -18,7 +18,7 @@ def evaluate_all_models_over_all_domains(
         model_i = T5ForConditionalGeneration.from_pretrained(
             f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{i}"
         )
-        for j, (domain, domain_wise_dataloader) in enumerate(
+        for j, (_, domain_wise_dataloader) in enumerate(
             cl_run_input.get_ordered_dataloaders(args)
         ):
             # Skip evaluating on domains that have not been seen yet.
@@ -31,12 +31,12 @@ def evaluate_all_models_over_all_domains(
             result_matrix[i, j] = Trainer(
                 model=model_i,
                 eval_dataset=dl_j,
-                compute_metrics=create_compute_metrics(TOKENIZER),
+                compute_metrics=create_compute_metrics(args, TOKENIZER, i, j, save_results),
             ).evaluate()["eval_accuracy"]
     return result_matrix
 
 
-def create_compute_metrics(tokenizer):
+def create_compute_metrics(args, tokenizer, model_idx, domain_idx, save_results: bool = False):
     def compute_metrics(eval_pred: EvalPrediction):
         logits, labels = eval_pred.predictions, eval_pred.label_ids
 
@@ -60,6 +60,20 @@ def create_compute_metrics(tokenizer):
 
         # Calculate accuracy
         accuracy = np.sum(correct_predictions) / len(labels_texts)
+
+        if save_results:
+            p = Path(f"{args['cl_predictions_dir']}/{args['cl_super_run_label']}/{args['cl_run_label']}")
+            p.mkdir(exist_ok=True, parents=True)
+            # Write formatted zipped list of predictions and labels
+            with open(f"{p}/model_{model_idx}_domain_{domain_idx}.txt", "w") as f:
+                f.write(
+                    "\n".join(
+                        [
+                            f"Prediction: {pred}\nLabel: {label}\n"
+                            for pred, label in zip(preds_texts, labels_texts)
+                        ]
+                    )
+                )
 
         return {"accuracy": accuracy}
 
