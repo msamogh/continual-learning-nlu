@@ -9,7 +9,7 @@ import randomname
 from cl_domain.config import get_args
 from cl_domain.domain import Domain, DomainSplit
 from cl_domain.train import continually_train, get_training_args
-from cl_domain.evaluation import evaluate_all_models_over_all_domains, predict_all_models_over_all_domains
+from cl_domain.evaluation import evaluate_all_models_over_all_domains
 from cl_result import CLRunResult
 from domain_ordering import ORDERINGS
 
