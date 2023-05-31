@@ -23,7 +23,7 @@ module load cuda/11.4.3
 # rm venv
 
 # Clone the GitHub repository
-git clone https://github.com/msamogh/continual-learning-nlu.git
+#git clone https://github.com/msamogh/continual-learning-nlu.git
 cd continual-learning-nlu
 git pull
 
@@ -37,17 +37,18 @@ pip install -r requirements.txt
 # Change directory
 cd cl_domain/
 
-# Generate dataset + Train + Evaluate
+# Random Generate dataset + Train + Evaluate
 echo "Strategy = Random"
 PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode all \
+    --mode train \
+    --cl_super_run_label random-flat-tee \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
     --ordering_strategy random \
-    --num_train_epochs 25 \
-    --num_runs 2 \
-    --num_domains_per_run 3 \
+    --num_train_epochs 18 \
+    --num_runs 22 \
+    --num_domains_per_run 5 \
     --cl_lr_schedule constant \
     --limit_n_samples 180 \
     --val_size_per_domain 0.01 \
@@ -55,38 +56,126 @@ PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --eval_batch_size 16 \
     --train_batch_size 16 \
 
-# Generate dataset + Train + Evaluate
-echo "Strategy = Max Path"
 PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode all \
+    --mode evaluate \
+    --cl_super_run_label random-flat-tee \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
-    --ordering_strategy max_path \
-    --num_train_epochs 25 \
-    --num_runs 2 \
-    --num_domains_per_run 3 \
-    --cl_lr_schedule linear \
+    --ordering_strategy random \
+    --num_train_epochs 5 \
+    --num_runs 22 \
+    --num_domains_per_run 5 \
+    --cl_lr_schedule constant \
     --limit_n_samples 180 \
     --val_size_per_domain 0.01 \
     --cl_experience_replay_size 20 \
     --eval_batch_size 16 \
     --train_batch_size 16 \
 
-# Generate dataset + Train + Evaluate
-echo "Strategy = Min Path"
+# Max path Generate dataset + Train + Evaluate
+echo "Strategy = Max Path"
 PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode all \
+    --mode train \
+    --cl_super_run_label max_path-vicious-tree \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
-    --ordering_strategy min_path \
-    --num_train_epochs 25 \
-    --num_runs 2 \
-    --num_domains_per_run 3 \
-    --cl_lr_schedule linear \
+    --ordering_strategy max_path \
+    --num_train_epochs 18 \
+    --num_runs 22 \
+    --num_domains_per_run 5 \
+    --cl_lr_schedule constant \
     --limit_n_samples 180 \
     --val_size_per_domain 0.01 \
     --cl_experience_replay_size 20 \
     --eval_batch_size 16 \
     --train_batch_size 16 \
+
+PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+    --mode evaluate \
+    --cl_super_run_label max_path-vicious-tree \
+    --cl_checkpoint_dir ../cl_checkpoints \
+    --cl_run_dir ../cl_runs \
+    --results_dir ../cl_results \
+    --ordering_strategy max_path \
+    --num_train_epochs 5 \
+    --num_runs 22 \
+    --num_domains_per_run 5 \
+    --cl_lr_schedule constant \
+    --limit_n_samples 180 \
+    --val_size_per_domain 0.01 \
+    --cl_experience_replay_size 20 \
+    --eval_batch_size 16 \
+    --train_batch_size 16 \
+
+
+# Min path Generate dataset + Train + Evaluate
+echo "Strategy = Min Path"
+PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+    --mode train \
+    --cl_super_run_label min_path-smoky-sash \
+    --cl_checkpoint_dir ../cl_checkpoints \
+    --cl_run_dir ../cl_runs \
+    --results_dir ../cl_results \
+    --ordering_strategy min_path \
+    --num_train_epochs 18 \
+    --num_runs 22 \
+    --num_domains_per_run 5 \
+    --cl_lr_schedule constant \
+    --limit_n_samples 180 \
+    --val_size_per_domain 0.01 \
+    --cl_experience_replay_size 20 \
+    --eval_batch_size 16 \
+    --train_batch_size 16 \
+
+PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+    --mode evaluate \
+    --cl_super_run_label min_path-smoky-sash \
+    --cl_checkpoint_dir ../cl_checkpoints \
+    --cl_run_dir ../cl_runs \
+    --results_dir ../cl_results \
+    --ordering_strategy min_path \
+    --num_train_epochs 5 \
+    --num_runs 22 \
+    --num_domains_per_run 5 \
+    --cl_lr_schedule constant \
+    --limit_n_samples 180 \
+    --val_size_per_domain 0.01 \
+    --cl_experience_replay_size 20 \
+    --eval_batch_size 16 \
+    --train_batch_size 16 \
+
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode all \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy max_path \
+#     --num_train_epochs 5 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule linear \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
+
+# # Generate dataset + Train + Evaluate
+# echo "Strategy = Min Path"
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode all \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy min_path \
+#     --num_train_epochs 5 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule linear \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
