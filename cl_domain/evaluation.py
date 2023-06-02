@@ -31,12 +31,12 @@ def evaluate_all_models_over_all_domains(
             result_matrix[i, j] = Trainer(
                 model=model_i,
                 eval_dataset=dl_j,
-                compute_metrics=create_compute_metrics(args, TOKENIZER, i, j, save_results),
+                compute_metrics=create_compute_metrics(args, TOKENIZER, i, j, cl_run_input.label, save_results),
             ).evaluate()["eval_accuracy"]
     return result_matrix
 
 
-def create_compute_metrics(args, tokenizer, model_idx, domain_idx, save_results: bool = False):
+def create_compute_metrics(args, tokenizer, model_idx, domain_idx, cl_run_label: Text, save_results: bool = False):
     def compute_metrics(eval_pred: EvalPrediction):
         logits, labels = eval_pred.predictions, eval_pred.label_ids
 
@@ -62,7 +62,7 @@ def create_compute_metrics(args, tokenizer, model_idx, domain_idx, save_results:
         accuracy = np.sum(correct_predictions) / len(labels_texts)
 
         if save_results:
-            p = Path(f"{args['cl_predictions_dir']}/{args['cl_super_run_label']}/{args['cl_run_label']}")
+            p = Path(f"{args['cl_predictions_dir']}/{args['cl_super_run_label']}/{cl_run_label}")
             p.mkdir(exist_ok=True, parents=True)
             # Write formatted zipped list of predictions and labels
             with open(f"{p}/model_{model_idx}_domain_{domain_idx}.txt", "w") as f:
