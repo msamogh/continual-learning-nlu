@@ -28,6 +28,10 @@ def evaluate_all_models_over_all_domains(
             dl_j = domain_wise_dataloader["test"]
             from train import TOKENIZER
 
+            if Path(f"{args['cl_predictions_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/model_{i}_domain_{j}.txt").exists():
+                print(f"Skipping {args['cl_predictions_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/model_{i}_domain_{j}.txt")
+                continue
+
             result_matrix[i, j] = Trainer(
                 model=model_i,
                 eval_dataset=dl_j,
