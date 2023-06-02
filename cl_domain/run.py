@@ -52,7 +52,7 @@ def generate_experiment_input(args: Dict[Text, Any], label: Text) -> "CLRunInput
 def generate_data(args) -> Text:
     # Generate domain ordering and domain-wise splits.
     # Generate both a pickle and a text file with the ordering.
-    if args["resume_existing_super_run"]:
+    if args.get("cl_super_run_label", None) is not None:
         super_run_label = args["cl_super_run_label"]
     else:
         super_run_label = randomname.get_name()
