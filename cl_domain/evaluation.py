@@ -15,9 +15,13 @@ def evaluate_all_models_over_all_domains(
         (len(cl_run_input.domain_ordering), len(cl_run_input.domain_ordering))
     )
     for i in range(len(cl_run_input.domain_ordering)):
-        model_i = T5ForConditionalGeneration.from_pretrained(
-            f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{i}"
-        )
+        try:
+            model_i = T5ForConditionalGeneration.from_pretrained(
+                f"{args['cl_checkpoint_dir']}/{args['cl_super_run_label']}/{cl_run_input.label}/after_{i}"
+            )
+        except Exception:
+            print(f"Could not load model {i} for run {cl_run_input.label}")
+            continue
         for j, (_, domain_wise_dataloader) in enumerate(
             cl_run_input.get_ordered_dataloaders(args)
         ):

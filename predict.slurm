@@ -25,7 +25,7 @@ module load cuda/11.4.3
 # Clone the GitHub repository
 #git clone https://github.com/msamogh/continual-learning-nlu.git
 cd continual-learning-nlu
-git pull
+# git pull
 
 # Create and activate a virtual environment
 python -m venv venv
@@ -39,14 +39,50 @@ cd cl_domain/
 
 # Random Generate dataset + Train + Evaluate
 echo "Strategy = Random"
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode predict \
+#     --cl_super_run_label random-flat-tee \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy random \
+#     --num_train_epochs 18 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
+
+# echo "Strategy = Max path"
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode predict \
+#     --cl_super_run_label max_path-vicious-tree \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy max_path \
+#     --num_train_epochs 5 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
+
+echo "Strategy = Min path"
 PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --mode predict \
-    --cl_super_run_label random-flat-tee \
+    --cl_super_run_label min_path-tahoe-word \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
-    --ordering_strategy random \
-    --num_train_epochs 18 \
+    --ordering_strategy min_path \
+    --num_train_epochs 5 \
     --num_runs 22 \
     --num_domains_per_run 5 \
     --cl_lr_schedule constant \
@@ -62,7 +98,7 @@ PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
-    --ordering_strategy max_path \
+    --ordering_strategy min_path \
     --num_train_epochs 5 \
     --num_runs 22 \
     --num_domains_per_run 5 \
@@ -72,3 +108,4 @@ PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --cl_experience_replay_size 20 \
     --eval_batch_size 16 \
     --train_batch_size 16 \
+

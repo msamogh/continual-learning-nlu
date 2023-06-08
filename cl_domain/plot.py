@@ -16,7 +16,9 @@ def read_results(args: Dict[Text, Any], super_run_label: Text) -> List[Dict[Text
             "ordering_strategy": super_run_label.split("-")[0],
             "num_classes": len(cl_run_result.cl_run_input.domain_ordering),
             "avg_accuracy": cl_run_result.avg_accuracy,
-            "avg_forgetting": cl_run_result.avg_forgetting
+            "avg_forgetting": cl_run_result.avg_forgetting,
+            "matrix": cl_run_result.result_matrix,
+            "domain_ordering_names": [domain.domain_name for domain in cl_run_result.cl_run_input.domain_ordering]
         })
     return results
 

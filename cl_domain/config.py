@@ -6,6 +6,12 @@ def get_args():
 
     args.add_argument("--mode", type=str, help="Mode to run in")
     args.add_argument(
+        "--ordering_basis",
+        type=str,
+        default="input",
+        help="Basis to use for domain ordering (input or label)",
+    )
+    args.add_argument(
         "--cl_super_run_label",
         required=False,
         type=str,

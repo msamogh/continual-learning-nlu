@@ -25,7 +25,7 @@ module load cuda/11.4.3
 # Clone the GitHub repository
 #git clone https://github.com/msamogh/continual-learning-nlu.git
 cd continual-learning-nlu
-git pull
+# git pull
 
 # Create and activate a virtual environment
 python -m venv venv
@@ -38,87 +38,105 @@ pip install -r requirements.txt
 cd cl_domain/
 
 # Random Generate dataset + Train + Evaluate
-echo "Strategy = Random"
-PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode train \
-    --cl_super_run_label random-flat-tee \
-    --cl_checkpoint_dir ../cl_checkpoints \
-    --cl_run_dir ../cl_runs \
-    --results_dir ../cl_results \
-    --ordering_strategy random \
-    --num_train_epochs 18 \
-    --num_runs 22 \
-    --num_domains_per_run 5 \
-    --cl_lr_schedule constant \
-    --limit_n_samples 180 \
-    --val_size_per_domain 0.01 \
-    --cl_experience_replay_size 20 \
-    --eval_batch_size 16 \
-    --train_batch_size 16 \
+# echo "Strategy = Random"
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode train \
+#     --cl_super_run_label random-flat-tee \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy random \
+#     --num_train_epochs 18 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
 
-PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode evaluate \
-    --cl_super_run_label random-flat-tee \
-    --cl_checkpoint_dir ../cl_checkpoints \
-    --cl_run_dir ../cl_runs \
-    --results_dir ../cl_results \
-    --ordering_strategy random \
-    --num_train_epochs 5 \
-    --num_runs 22 \
-    --num_domains_per_run 5 \
-    --cl_lr_schedule constant \
-    --limit_n_samples 180 \
-    --val_size_per_domain 0.01 \
-    --cl_experience_replay_size 20 \
-    --eval_batch_size 16 \
-    --train_batch_size 16 \
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode evaluate \
+#     --cl_super_run_label random-flat-tee \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy random \
+#     --num_train_epochs 5 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
 
 # Max path Generate dataset + Train + Evaluate
-echo "Strategy = Max Path"
-PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode train \
-    --cl_super_run_label max_path-vicious-tree \
-    --cl_checkpoint_dir ../cl_checkpoints \
-    --cl_run_dir ../cl_runs \
-    --results_dir ../cl_results \
-    --ordering_strategy max_path \
-    --num_train_epochs 18 \
-    --num_runs 22 \
-    --num_domains_per_run 5 \
-    --cl_lr_schedule constant \
-    --limit_n_samples 180 \
-    --val_size_per_domain 0.01 \
-    --cl_experience_replay_size 20 \
-    --eval_batch_size 16 \
-    --train_batch_size 16 \
+# echo "Strategy = Max Path"
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode train \
+#     --cl_super_run_label max_path-vicious-tree \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy max_path \
+#     --num_train_epochs 18 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
 
-PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
-    --mode evaluate \
-    --cl_super_run_label max_path-vicious-tree \
-    --cl_checkpoint_dir ../cl_checkpoints \
-    --cl_run_dir ../cl_runs \
-    --results_dir ../cl_results \
-    --ordering_strategy max_path \
-    --num_train_epochs 5 \
-    --num_runs 22 \
-    --num_domains_per_run 5 \
-    --cl_lr_schedule constant \
-    --limit_n_samples 180 \
-    --val_size_per_domain 0.01 \
-    --cl_experience_replay_size 20 \
-    --eval_batch_size 16 \
-    --train_batch_size 16 \
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode evaluate \
+#     --cl_super_run_label max_path-vicious-tree \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy max_path \
+#     --num_train_epochs 5 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
 
 
 # Min path Generate dataset + Train + Evaluate
 echo "Strategy = Min Path"
+
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode generate_data \
+#     --cl_super_run_label tahoe-word \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy min_path \
+#     --num_train_epochs 18 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 16 \
+#     --train_batch_size 16 \
+
 PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --mode train \
-    --cl_super_run_label min_path-smoky-sash \
+    --cl_super_run_label max_path-studio-vest \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
-    --ordering_strategy min_path \
+    --ordering_strategy max_path \
     --num_train_epochs 18 \
     --num_runs 22 \
     --num_domains_per_run 5 \
@@ -126,16 +144,16 @@ PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --limit_n_samples 180 \
     --val_size_per_domain 0.01 \
     --cl_experience_replay_size 20 \
-    --eval_batch_size 16 \
-    --train_batch_size 16 \
+    --eval_batch_size 4 \
+    --train_batch_size 4 \
 
 PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --mode evaluate \
-    --cl_super_run_label min_path-smoky-sash \
+    --cl_super_run_label max_path-studio-vest \
     --cl_checkpoint_dir ../cl_checkpoints \
     --cl_run_dir ../cl_runs \
     --results_dir ../cl_results \
-    --ordering_strategy min_path \
+    --ordering_strategy max_path \
     --num_train_epochs 5 \
     --num_runs 22 \
     --num_domains_per_run 5 \
@@ -143,8 +161,44 @@ PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
     --limit_n_samples 180 \
     --val_size_per_domain 0.01 \
     --cl_experience_replay_size 20 \
-    --eval_batch_size 16 \
-    --train_batch_size 16 \
+    --eval_batch_size 4 \
+    --train_batch_size 4 \
+
+
+
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode train \
+#     --cl_super_run_label random-plastic-cover \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy random \
+#     --num_train_epochs 18 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 4 \
+#     --train_batch_size 4 \
+
+# PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
+#     --mode evaluate \
+#     --cl_super_run_label random-plastic-cover \
+#     --cl_checkpoint_dir ../cl_checkpoints \
+#     --cl_run_dir ../cl_runs \
+#     --results_dir ../cl_results \
+#     --ordering_strategy random \
+#     --num_train_epochs 5 \
+#     --num_runs 22 \
+#     --num_domains_per_run 5 \
+#     --cl_lr_schedule constant \
+#     --limit_n_samples 180 \
+#     --val_size_per_domain 0.01 \
+#     --cl_experience_replay_size 20 \
+#     --eval_batch_size 4 \
+#     --train_batch_size 4 \
 
 # PYTHONPATH=$PYTHONPATH:$(pwd)/.. python run.py \
 #     --mode all \
